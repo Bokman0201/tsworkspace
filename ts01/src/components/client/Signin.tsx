@@ -108,8 +108,8 @@ export const Signin: React.FC = () => {
 
                 }
             }).catch(
-                err=>{
-                    if(err.response.status ===400){
+                err => {
+                    if (err.response.status === 400) {
                         alert("이미 가입된 회원입니다.")
                     }
                 }
@@ -174,9 +174,9 @@ export const Signin: React.FC = () => {
                 clientName: clientInfo.clientName,
                 clientPw: clientInfo.clientPw
             }
-        }).then(res =>{
+        }).then(res => {
             //200번 홈으로 redirect 
-            if(res.status === 200){
+            if (res.status === 200) {
                 navigator('/')
             }
         }).catch(
@@ -184,16 +184,10 @@ export const Signin: React.FC = () => {
         );
     }
     return (
-        <form autoComplete="off" onSubmit={(e) => {
-            e.preventDefault(); // 폼이 실제로 전송되는 것을 방지
+        <
 
-            if (clientInfoResult.clientEmailResult && clientInfoResult.clientNameResult && clientInfoResult.clientPwCheckResult && clientInfoResult.clientPwResult) {
-                handleSubmitForm();
-            } else {
-                // 원하는 로직 수행 (예: 에러 메시지 표시 등)
-                console.log('폼 조건 충족 실패');
-            }
-        }}>            <div className="row mt-4" >
+            >
+            <div className="row mt-4" >
                 <div className="col-lg-6 col-md-8 offset-md-2 offset-lg-3">
                     <div className="input-group">
                         <input className="form-control" value={clientInfo.clientEmail} readOnly={isAuth} name="clientEmail" onChange={handleChangeClientInfo} required placeholder="아이디 이메일 형식" />
@@ -213,16 +207,18 @@ export const Signin: React.FC = () => {
                     </div>
                 </div>
             </div>
-            {isStatus === true && (
-                <div className="row mt-2">
-                    <div className="col-lg-4  col-md-6 offset-md-4 offset-lg-5 ">
-                        <div className="input-group ">
-                            <input className="form-control" onChange={handleChangeCode} required placeholder="인증번호 입력" />
-                            <button type="button" className="btn btn-outline-secondary" onClick={handleMatchCode}>인증하기</button>
+            {
+                isStatus === true && (
+                    <div className="row mt-2">
+                        <div className="col-lg-4  col-md-6 offset-md-4 offset-lg-5 ">
+                            <div className="input-group ">
+                                <input className="form-control" onChange={handleChangeCode} required placeholder="인증번호 입력" />
+                                <button type="button" className="btn btn-outline-secondary" onClick={handleMatchCode}>인증하기</button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            )}
+                )
+            }
             <div className="row mt-2">
                 <div className="col-lg-6 col-md-8 offset-md-2 offset-lg-3">
                     <input className="form-control" value={clientInfo.clientName} name="clientName" onChange={handleChangeClientInfo} required placeholder="이름 or 닉네임" />
@@ -285,9 +281,19 @@ export const Signin: React.FC = () => {
 
             <div className="row mt-4">
                 <div className="col-lg-6 col-md-8 offset-md-2 offset-lg-3">
-                    <button type="submit" className="btn btn-primary w-100" >가입하기</button>
+                    <button type="button"
+                        onClick={(e) => {
+                            e.preventDefault(); // 폼이 실제로 전송되는 것을 방지
+                            if (clientInfoResult.clientEmailResult && clientInfoResult.clientNameResult && clientInfoResult.clientPwCheckResult && clientInfoResult.clientPwResult) {
+                                handleSubmitForm();
+                            } else {
+                                // 원하는 로직 수행 (예: 에러 메시지 표시 등)
+                                console.log('폼 조건 충족 실패');
+                            }
+                        }}
+                        className="btn btn-primary w-100" >가입하기</button>
                 </div>
             </div>
-        </form>
+        </ >
     );
 }

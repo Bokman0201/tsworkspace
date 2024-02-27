@@ -12,3 +12,14 @@ export type ClientInfoResult ={
     clientPwResult:null|boolean,
     clientPwCheckResult:null|boolean,
 }
+
+export type LoginInfo = {
+    loginId : string,
+    loginPw : string
+}
+
+export type ClientType = {
+    clientEmail: string | null,
+    clientName: string | null,
+    clientJoinDate:string | null
+}

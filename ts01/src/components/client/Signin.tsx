@@ -1,8 +1,11 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import { Client, ClientInfoResult } from "../../model/client";
 import axios, { Axios } from "axios";
+import { useNavigate } from "react-router-dom";
 
 export const Signin: React.FC = () => {
+
+    const navigator = useNavigate();
 
     const [clientInfo, setClientInfo] = useState<Client>({
         clientEmail: '',
@@ -36,12 +39,60 @@ export const Signin: React.FC = () => {
     }, [clientInfo]);
 
 
-    const [emailResult, setEmailResult] = useState<Boolean>(false);
     const [loading, setLoading] = useState<boolean | null>(null);
+    const [isAuth, setIsAuth] = useState<boolean>(false);
+
+    //이메일 전송상태 타이머 시작용
+    const [isStatus, setIsStatus] = useState<boolean>(false);
+
+    const [time, setTime] = useState<number>(180); // 초 단위로 타이머 시간 저장
+    const [isActive, setIsActive] = useState<boolean>(false);
+
+    useEffect(() => {
+        let interval: NodeJS.Timeout;
+
+        if (isActive && time > 0) {
+            interval = setInterval(() => {
+                setTime((prevTime) => prevTime - 1);
+            }, 1000);
+        }
+
+        if (time === 0) {
+            alert('시간 초과');
+            setIsStatus(false);
+            //클라이언트 아이디로 인증번호 제거
+            resetTimer();
+        }
+
+        return () => {
+            clearInterval(interval);
+        };
+    }, [isActive, time]);
+
+    const startTimer = () => {
+        setIsActive(true);
+    };
+
+    const pauseTimer = () => {
+        setIsActive(false);
+    };
+
+    const resetTimer = () => {
+        deleteAuth();
+        setIsActive(false);
+        setTime(180); // 3분으로 초기화
+    };
+
+    const formatTime = () => {
+        const minutes = Math.floor(time / 60);
+        const seconds = time % 60;
+        return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    };
 
     const handleEmailSend = () => {
+        deleteAuth();
         if (clientInfo.clientEmail.length > 0) {
-
+            //전송전에 모든 같은 이메일의 auth 제거 
             setLoading(true)
             axios({
                 url: `${process.env.REACT_APP_REST_API_URL}/client/EmailAuthentication/${clientInfo.clientEmail}`,
@@ -50,27 +101,103 @@ export const Signin: React.FC = () => {
                 console.log(res.status)
                 if (res.status === 200) {
                     alert("전송되었습니다.")
+                    startTimer();
                     //전송중이라는 로딩상태 만들기
                     setLoading(false)
-                    setEmailResult(true);
-                    setClientInfoResult({
-                        ...clientInfoResult,
-                        clientEmailResult: true
-                    })
+                    setIsStatus(true)
+
                 }
-            }).catch();
+            }).catch(
+                err=>{
+                    if(err.response.status ===400){
+                        alert("이미 가입된 회원입니다.")
+                    }
+                }
+            );
         }
-        else{
+        else {
             alert("이메일을 입력해주세요")
         }
     }
+
+    const [code, setCode] = useState<string>();
+    const handleChangeCode = (e: ChangeEvent<HTMLInputElement>) => {
+        setCode(e.target.value)
+    }
+
+    const handleMatchCode = () => {
+
+        axios({
+            url: `http://localhost:8080/client/isMatchAuth/${clientInfo.clientEmail}/${code}`,
+            method: 'post'
+        }).then(res => {
+            if (res.status === 200) {
+                alert('인증 되었습니다.')
+
+                //타이머 종료 
+                //모든 auth삭제 
+                resetTimer();
+                //인증상태 true
+                setIsAuth(true)
+                setIsStatus(false)
+                setClientInfoResult({
+                    ...clientInfoResult,
+                    clientEmailResult: true
+                })
+            }
+        }).catch(err => {
+            if (err.response.status === 404) {
+                //not found
+            }
+            else if (err.response.status === 400) {
+                //bad request
+            }
+            else {
+                //network err
+            }
+        });
+    }
+
+
+    const deleteAuth = () => {
+        axios.delete(`http://localhost:8080/client/deleteAuth/${clientInfo.clientEmail}`)
+    }
+
+
+    const handleSubmitForm = () => {
+
+        axios({
+            url: `http://localhost:8080/client/signin`,
+            method: 'post',
+            data: {
+                clientEmail: clientInfo.clientEmail,
+                clientName: clientInfo.clientName,
+                clientPw: clientInfo.clientPw
+            }
+        }).then(res =>{
+            //200번 홈으로 redirect 
+            if(res.status === 200){
+                navigator('/')
+            }
+        }).catch(
+            //network error
+        );
+    }
     return (
-        <form autoComplete="off">
-            <div className="row mt-4" >
+        <form autoComplete="off" onSubmit={(e) => {
+            e.preventDefault(); // 폼이 실제로 전송되는 것을 방지
+
+            if (clientInfoResult.clientEmailResult && clientInfoResult.clientNameResult && clientInfoResult.clientPwCheckResult && clientInfoResult.clientPwResult) {
+                handleSubmitForm();
+            } else {
+                // 원하는 로직 수행 (예: 에러 메시지 표시 등)
+                console.log('폼 조건 충족 실패');
+            }
+        }}>            <div className="row mt-4" >
                 <div className="col-lg-6 col-md-8 offset-md-2 offset-lg-3">
                     <div className="input-group">
-                        <input className="form-control" value={clientInfo.clientEmail} name="clientEmail" onChange={handleChangeClientInfo} required placeholder="아이디 이메일 형식" />
-                        <button type="button" className="btn btn-outline-primary" onClick={handleEmailSend}>이메일 인증</button>
+                        <input className="form-control" value={clientInfo.clientEmail} readOnly={isAuth} name="clientEmail" onChange={handleChangeClientInfo} required placeholder="아이디 이메일 형식" />
+                        <button type="button" className="btn btn-outline-primary" disabled={isAuth} onClick={handleEmailSend}>{isStatus ? (<>{formatTime()}</>) : (<>이메일 인증</>)}</button>
                     </div>
                     {clientInfoResult.clientEmailResult === true && (
                         <div className="text-center">
@@ -86,12 +213,12 @@ export const Signin: React.FC = () => {
                     </div>
                 </div>
             </div>
-            {emailResult === true && (
-                <div className="row ">
+            {isStatus === true && (
+                <div className="row mt-2">
                     <div className="col-lg-4  col-md-6 offset-md-4 offset-lg-5 ">
                         <div className="input-group ">
-                            <input className="form-control" required placeholder="인증번호 입력" />
-                            <button className="btn btn-outline-secondary">인증하기</button>
+                            <input className="form-control" onChange={handleChangeCode} required placeholder="인증번호 입력" />
+                            <button type="button" className="btn btn-outline-secondary" onClick={handleMatchCode}>인증하기</button>
                         </div>
                     </div>
                 </div>
@@ -158,7 +285,7 @@ export const Signin: React.FC = () => {
 
             <div className="row mt-4">
                 <div className="col-lg-6 col-md-8 offset-md-2 offset-lg-3">
-                    <button type="submit" className="btn btn-primary w-100">가입하기</button>
+                    <button type="submit" className="btn btn-primary w-100" >가입하기</button>
                 </div>
             </div>
         </form>

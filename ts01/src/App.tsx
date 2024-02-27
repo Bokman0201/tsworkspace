@@ -6,6 +6,8 @@ import { Header } from './components/heder/Header';
 import { Login } from './components/client/Login';
 import { Container } from 'react-bootstrap';
 import { Signin } from './components/client/Signin';
+import { Home } from './components/Home';
+import { Provider } from 'react-redux';
 
 const App: React.FC = () => {
 
@@ -14,8 +16,10 @@ const App: React.FC = () => {
       <div className='container-fluid' >
         <Header />
       </div>
+
       <Container>
         <Routes>
+          <Route path='/' element={<Home/>}/>
           <Route path='/login' element={<Login />} />
           <Route path='/signin' element={<Signin />} />
         </Routes>

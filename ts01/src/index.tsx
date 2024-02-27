@@ -5,6 +5,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter, HashRouter } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { Provider } from 'react-redux';
 
 
 const root = ReactDOM.createRoot(
@@ -12,9 +13,9 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
-    <BrowserRouter>
-    <App />
-    </BrowserRouter>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
   </React.StrictMode>
 );
 

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import { Route, Router, Routes, useNavigate, useParams } from 'react-router-dom';
@@ -12,6 +12,9 @@ import { Client } from './model/client';
 import { useClientStore } from './store/client/clientStore';
 import { MyPage } from './components/client/Mypage';
 import { UpdateInfo } from './components/client/UpdateInfo';
+import './components/header.css';
+
+//소셜 및 채팅 시스템
 
 const App: React.FC = () => {
 
@@ -34,10 +37,26 @@ const App: React.FC = () => {
       });
     }
   }, [userString ,useClientStore]);
+  const [isScrolled, setIsScrolled] = useState<boolean>(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrolled = window.scrollY > 20;
+      console.log(window.scrollY)
+      console.log(scrolled)
+      setIsScrolled(scrolled);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
 
   return (
     <div className="">
-      <div className='container-fluid' >
+      <div className={`  ${isScrolled ? 'header' : ''}`}>
         <Header />
       </div>
 

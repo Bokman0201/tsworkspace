@@ -17,16 +17,15 @@ export const MyPage = () => {
         setIsImageUpdate(!isImageUpdate);
     }
 
-    const [image, setImage] = useState<string|null>();
-    useEffect(()=>{
-        if(clientEmail){
-            helperGetImage(clientEmail).then(res => {
-                console.log(res); // 여기에서 이미지 URL 또는 null이 출력됨
-                setImage(res)
-              });
+    const [image, setImage] = useState<string | null>();
+    useEffect(() => {
+        if (clientEmail) {
+            helperGetImage(clientEmail).then((res) => {
+                console.log(res); // 이미지 URL 또는 null이 출력됨
+                setImage(res);
+            });
         }
-
-    },[clientEmail])
+    }, [clientEmail]);
 
 
     return (
@@ -34,42 +33,53 @@ export const MyPage = () => {
             <div className="row">
                 <div className="col-lg-6 col-md-8 offset-md-2 offset-lg-3 border p-4">
                     <div className="row">
-                        <div style={{ position: 'relative', width: '150px', height: '150px' }}>
-                            <img
-                                src="image"
-                                className="mx-auto d-block"
-                                style={{ borderRadius: '50%', position: 'absolute', bottom: 0, left: 0 }}
-                                alt="Profile"
-                            />
+                        <div className="position-relative" style={{ width: '150px', height: '150px', margin: 'auto' }}>
+                            {image && (
+                                <img
+                                    src={image}
+                                    width={"120px"}
+                                    height={"120px"}
+                                    className="mx-auto d-block position-absolute top-50 start-50 translate-middle"
+                                    style={{ borderRadius: '50%' }}
+                                    alt="Profile"
+                                />
+                            )}
 
-                            <FaExchangeAlt onClick={handleImageUpdate} style={{ position: 'absolute', bottom: 0, left: 0, cursor: 'pointer' }} />
+                            <FaExchangeAlt onClick={handleImageUpdate} className="position-absolute bottom-0 start-0 translate-middle" style={{ cursor: 'pointer' }} />
                         </div>
+
                         <div className="col">
 
                             <div className="row">
                                 <div className="col">
-                                    email : {clientEmail}<hr/>
+                                    email : {clientEmail}<hr />
                                 </div>
-                                
+
                             </div>
                             <div className="row">
                                 <div className="col">
-                                    이름 : {clientName}<hr/>
+                                    이름 : {clientName}<hr />
                                 </div>
                             </div>
                             <div className="row">
                                 <div className="col">
-                                    가입일 : {clientJoinDate}<hr/>
+                                    가입일 : {clientJoinDate}<hr />
                                 </div>
                             </div>
                             <div className="row ">
                                 <div className="col" >
-                                    {isImageUpdate && (
+                                    {isImageUpdate ? (
                                         <>
                                             <div className="mb-3">
                                                 <input className="form-control form-control-sm" id="formFileSm" type="file" />
                                             </div>
                                         </>
+                                    ):(
+                                        <>
+                                        <div className="mb-3">
+                                            <p></p>
+                                        </div>
+                                    </>
                                     )}
                                 </div>
                             </div>

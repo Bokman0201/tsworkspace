@@ -1,0 +1,23 @@
+.content-title {
+     border-radius: 5px;
+     padding: 1.3em;
+     background-image: url('https://dummyimage.com/600x400/22cb83/2f44e8');
+     background-size: cover; /* 배경 이미지를 요소의 크기에 맞게 조정 */
+     background-position: center; /* 배경 이미지를 가운데 정렬 */
+}
+
+.community-content {
+    padding: 0; /* ul의 padding 제거 */
+    margin: 0; /* ul의 margin 제거 */
+}
+
+.community-content li {
+    list-style-type: none; /* li 요소의 앞에 점 없애기 */
+    padding: 0.7em;
+    margin-top: 0.2em;
+    border: 1px solid rgb(188, 183, 183); /* 테두리 추가 */
+}
+
+.community-content .hovering:hover {
+    background-color: rgb(228, 227, 227);
+}

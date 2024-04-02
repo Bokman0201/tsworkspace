@@ -5,8 +5,7 @@
   }
 
   .col-12.border {
-    margin-top: 0.5rem; /* 상단 마진을 2rem으로 설정 */
-  }
-
-  
-  
+    margin-top: 0.5rem; /* 상단 마진을 0.5rem으로 설정 */
+    border-radius: 5px; /* 모서리를 5%로 설정 */
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1); /* 우측하단으로 그림자 추가 */
+}

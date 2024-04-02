@@ -4,11 +4,14 @@ import { clientState } from "../../store/ClientStore";
 import { useEffect, useState } from "react";
 import { groupInfoType } from "../../model/GroupModel";
 import { useNavigate } from "react-router-dom";
+import { groupNoState } from "../../store/GroupStroe";
 
 export const MyGroup = () => {
 
     const [client, setClient] = useRecoilState(clientState);
     const [groupList, setGroupList] = useState<groupInfoType[]>([]);
+
+    const [groupNo, setGroupNo] = useRecoilState<number>(groupNoState);
     const navigator =useNavigate();
     const getMygroupList = async () => {
         try {
@@ -27,9 +30,11 @@ export const MyGroup = () => {
     }, [client])
 
 
-    const handleMoveDetail =(groupId:number)=>{
-        console.log(groupId)
-        navigator(`/groupDetail?groupId=${groupId}`);
+    const handleMoveDetail =(no:number)=>{
+        setGroupNo(no)
+        localStorage.setItem('groupId', no.toString());
+
+        navigator(`/groupDetail`);
     }
 
 
@@ -70,7 +75,9 @@ export const MyGroup = () => {
                             </div>
                             <div className="row">
                                 <div className="col">
-                                    <span style={{ fontSize: "15px" }}>{group.groupsHost}</span>
+                                    <span style={{ fontSize: "12px" }}>
+                                        {group.groupsHost}
+                                        </span>
                                 </div>
                             </div>
                         </div>

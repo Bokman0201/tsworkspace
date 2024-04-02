@@ -14,6 +14,9 @@ import { useRecoilState } from 'recoil';
 import { clientState } from './store/ClientStore';
 import { MyGroup } from './components/group/MyGroup';
 import { GroupDetail } from './components/group/GroupDetail';
+import { Community } from './components/mygroup/Community';
+import { CommunityBoardWrite } from './components/community/CommunityBoardWrite';
+import { CommunityBoardDetail } from './components/community/CommunityBoardDetail';
 
 function App() {
   const clientString = sessionStorage.getItem('client');
@@ -26,24 +29,24 @@ function App() {
     clientBirth: '',
     affiliationId: 0
   });
-  const [clientStore, setClientStore] =useRecoilState(clientState);
+  const [clientStore, setClientStore] = useRecoilState(clientState);
 
 
 
   useEffect(() => {
-    if(clientString){
+    if (clientString) {
       const parseClient = JSON.parse(clientString)
       setClient(parseClient);
       setClientStore(parseClient);
     }
-  else{
+    else {
       navigator("/login");
-  }
+    }
   }, [clientString])
 
-  useEffect(()=>{
+  useEffect(() => {
     //로그용
-  },[client])
+  }, [client])
 
 
 
@@ -55,7 +58,7 @@ function App() {
 
   return (
     <div className="" >
-
+      {/* endpoint 작성일때 헤더 제거 */}
       {client.clientEmail !== '' && (
         <Header />
       )}
@@ -65,13 +68,27 @@ function App() {
           <Route path='/' element={<Home />} />
           <Route path='/login' element={<Login />} />
           <Route path='/signup' element={<Signup />} />
-          
-          <Route path='/boardList' element={<BoardList/>}/>
 
-          <Route path='/groupList' element ={<GroupList/>}/>
-          <Route path='/mygroup' element={<MyGroup/>}/>
+          <Route path='/boardList' element={<BoardList />} />
+
+          <Route path='/groupList' element={<GroupList />} />
+          <Route path='/mygroup' element={<MyGroup />} />
           <Route path="/groupDetail" element={<GroupDetail />} />
-        </Routes>
+
+
+          <Route path='/community' element={<Community />} />
+          <Route
+            path="/communityBoardWrite"
+            element={
+              <>
+                <link href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet" />
+                <CommunityBoardWrite />
+              </>
+            }
+          />        
+
+          <Route path='/communityBoardDetail' element={<CommunityBoardDetail/>}/>
+          </Routes>
       </Container>
 
 

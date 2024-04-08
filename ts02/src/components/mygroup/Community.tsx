@@ -13,7 +13,8 @@ type listType = {
 }
 export const Community: React.FC = () => {
 
-    const pureTextRegex = /<[^>]+>/g;
+    //해야할 것 페이지 네이션
+
 
 
 
@@ -43,18 +44,26 @@ export const Community: React.FC = () => {
     ]);
 
 
+   
     const handleGoBoardWrite = () => {
+       
+        
         navigator('/communityBoardWrite')
     }
 
 
+
+    //html 태그 이외의 모든 글자 표시
     const changeHtml = (text: string) => {
         const pureText = text.replace(/<[^>]+>/g, '');
         return pureText;
     }
 
+
+    //게시글 상세로 이동
     const handleNavDetail=(boardId : number|null)=>{
 
+        //조회수 업데이트 추가하기
         console.log(boardId)
         if(boardId !==null){
             console.log(boardId)
@@ -112,6 +121,13 @@ export const Community: React.FC = () => {
                                     <div className="row" style={{
                                         // borderTop: "1px solid black" /* 테두리 스타일과 색상을 설정합니다. */
                                     }}>
+                                        <div className="col">
+                                            <span
+                                            style={{fontSize:"10px"}}
+                                            >
+                                            {content.communityBoardWriter}
+                                            </span>
+                                            </div>
                                         <div className="col text-end">
                                             <span
                                                 style={{

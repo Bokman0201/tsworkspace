@@ -204,7 +204,9 @@ export const CommunityBoardWrite: React.FC = () => {
       <div className="row mt-3">
         <div className="col-12">
           <div className="w-100">
-            <textarea className="form-control" value={boardData.communityBoardContent} name="communityBoardContent" id="summernote"></textarea>
+            <textarea
+            
+            className="form-control" value={boardData.communityBoardContent} name="communityBoardContent" id="summernote"></textarea>
           </div>
         </div>
       </div>

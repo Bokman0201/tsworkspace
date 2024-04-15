@@ -70,6 +70,9 @@ export const Community: React.FC = () => {
             sessionStorage.setItem("boardId", boardId.toString());
             navigator("/communityBoardDetail");
         }
+
+        //조회수 증가
+        axios.put(`http://localhost:8080/readCountUpdate/${boardId}`);
     }
 
     return (

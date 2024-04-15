@@ -9,6 +9,9 @@ import './communityBoardStyle.css';
 
 
 type replyType = {
+    replyId: number,
+    replyParentId: number | null,
+    boardId: number,
     replyWriter: string,
     replyContent: string,
     replyUpdateDate: string
@@ -19,26 +22,30 @@ export const CommunityBoardDetail = () => {
     const [user, setUser] = useRecoilState(clientState);
 
     const boardIdStateKey = 'boardId';
+    const boardId = sessionStorage.getItem(boardIdStateKey);
 
 
     //댓글 리스트 임시
-    const [replyList, setReplyList] = useState<replyType[]>([
-        {
-            replyWriter: "User1",
-            replyContent: "test1",
-            replyUpdateDate: "2024-04-08"
-        },
-        {
-            replyWriter: "User2",
-            replyContent: "test2!",
-            replyUpdateDate: "2024-04-07"
-        },
-        {
-            replyWriter: "User3",
-            replyContent: "test3.",
-            replyUpdateDate: "2024-04-06"
+    const [replyList, setReplyList] = useState<replyType[]>([]);
+
+    useEffect(() => {
+        getReplyList();
+    }, []);
+    const getReplyList = async () => {
+
+        try {
+            const res = await axios.get(`http://localhost:8080/replyList/${boardId}`);
+            setReplyList(res.data)
+
         }
-    ]);
+        catch {
+            console.error("network error");
+        }
+
+    }
+
+
+
 
 
     const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -74,6 +81,121 @@ export const CommunityBoardDetail = () => {
     }
 
 
+    //댓글 작성
+
+    const [replyContent, setReplyContent] = useState<string | undefined>();
+    //댓글 저장
+    const handleReplyWrite = (e: ChangeEvent<HTMLTextAreaElement>) => {
+        setReplyContent(e.target.value);
+    }
+
+    //통신
+    const replyWrite = () => {
+
+        const boardId = sessionStorage.getItem(boardIdStateKey);
+
+        axios({
+            url: `http://localhost:8080/replyWrite`,
+            method: 'post',
+            data: {
+                replyWriter: user.clientEmail,
+                replyContent: replyContent,
+                replyParentId: null,
+                boardId: boardId
+            }
+        }).then(res => {
+            console.log(res.status)
+
+            if (res.status === 200) {
+                getReplyList();
+                setReplyContent("");
+                //리스트 리로드
+            }
+
+
+
+
+
+
+        }).catch();
+    }
+
+    //작성시 댓글창 새로고침
+
+
+    //좋아요
+
+
+    //대댓글
+    const [selectedId, setSelectedId] = useState<number | null>(null);
+
+    const handleComment = (replyId: number) => {
+        if (replyId === selectedId) {
+            setSelectedId(null);
+        }
+        else {
+            setSelectedId(replyId);
+        }
+    }
+
+    //댓글 수정
+    const [selectedReplyIndex, setSelectedReplyIndex] = useState<number | null>(null);
+
+    const handleUpdateReplyContent = (replyIndex: number) => {
+        if (replyIndex === selectedReplyIndex) {
+            setSelectedReplyIndex(null); // 같은 댓글을 두 번 클릭하면 수정 모드를 끄도록 토글
+        } else {
+            setSelectedReplyIndex(replyIndex);
+        }
+    }
+
+    const handleInputChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+        const updatedReplyList = replyList.map(reply => {
+            if (reply.replyId === selectedReplyIndex) {
+                return { ...reply, replyContent: e.target.value };
+            }
+            return reply;
+        });
+        setReplyList(updatedReplyList);
+    };
+
+    const saveChangeReplyData = () => {
+        const origin = replyList.find(reply => reply.replyId === selectedReplyIndex);
+
+        console.log(origin)
+
+        axios({
+            url: `http://localhost:8080/replyUpdate`,
+            method: 'put',
+            data: origin
+        }).then(res => {
+            console.log(res.status)
+            setSelectedReplyIndex(null);
+            getReplyList();
+        }).catch();
+    }
+
+
+    //댓글 삭제
+    const deleteReply = (replyId: number) => {
+        console.log(replyList.find(reply => reply.replyId === replyId))
+        const result = window.confirm("삭제 하시겠습니까?");
+
+        if (result) {
+            axios({
+                url: `http://localhost:8080/delete/${replyId}`,
+                method: 'delete',
+            }).then(res => {
+                getReplyList();
+            })
+            //삭제하고 리스트 초기화
+        }
+        else {
+            alert("취소되었습니다.")
+        }
+    }
+
+
 
     //버튼 드랍다운
 
@@ -98,46 +220,52 @@ export const CommunityBoardDetail = () => {
                     <h2>{board?.communityBoardTitle}</h2>
                 </div>
             </div>
+
+
+            {/* 내글 수정 삭제 */}
             <div className="row mt-3">
-                <div className="col"
-                >
+                <div className="col">
                     <div>{innerHtmlContent()}</div>
                 </div>
             </div>
 
 
-            <div style={{border:"1px solid", padding:"0.5em", borderRadius: "0.5em"  }}>
+            <div style={{ border: "1px solid", padding: "0.5em", borderRadius: "0.5em" }}>
                 <div className="row">
                     <div className="col">
-                        <textarea className="form-control" placeholder="댓글을 입력해 주세요"></textarea>
+                        <textarea
+                            style={{ resize: "none" }}
+                            onChange={handleReplyWrite}
+                            value={replyContent}
+                            className="form-control" placeholder="댓글을 입력해 주세요"></textarea>
                     </div>
                 </div>
                 <div className="row mt-2">
                     <div className="col text-end">
-                        <button className="btn btn-success">댓글달기</button>
+                        <button className="btn btn-success" onClick={replyWrite}>댓글달기</button>
                     </div>
                 </div>
             </div>
 
-            <div className="row mt-2">
+            {/* <div className="row mt-2">
                 <div className="col text-end ">
-                    <span className="pointer" onClick={toggleReplyList}>{isOpen ? (
+                    <span className="pointer" >{isOpen ? (
                         "댓글닫기"
                     ) : (
                         "댓글보기"
                     )}</span>
 
                 </div>
-            </div>
+            </div> */}
 
-            <div className="row">
+            <div className="row mt-4 mb-3">
                 <div className="col">
-                    <span>{replyList.length}개의 댓글</span>
+                    <span onClick={toggleReplyList}>{replyList.length}개의 댓글</span>
                 </div>
                 <div className="col-2">
                     <div className="custom-dropdown">
-                        <div className="selected-option" onClick={() => setIsDropDown(!isDropDown)}>
-                            {selectedOption || "Choose an option"}
+                        <div className="selected-option" onClick={() => setIsDropDown(!isDropDown)} style={{ cursor: "pointer" }}>
+                            {selectedOption || "정렬"}
                         </div>
                         {/* 드롭다운 메뉴 */}
                         <div className="dropdown-menu" style={{ display: isDropDown ? "block" : "none" }}>
@@ -154,16 +282,54 @@ export const CommunityBoardDetail = () => {
                 <div className="row mt-3">
                     <div className="col">
                         {replyList.map((reply, index) => (
-                            <>
-                                <div key={index} className="row mt-1">
-                                    <div className="col">이미지/{reply.replyWriter} / 작성시간</div>
+                            <div className="border mt-2 p-1" key={index}>
+                                <div className="row">
+                                    <div className="col-8">이미지/{reply.replyWriter}</div>
+                                    <div className="col text-end"> {reply.replyUpdateDate.split(" ")[0]}</div>
                                 </div>
                                 <div className="row">
                                     <div className="col">
-                                        {reply.replyContent}
+                                        {selectedReplyIndex === reply.replyId ? (
+                                            <div className="input-group mt-2">
+                                                <textarea className="form-control" value={reply.replyContent} onChange={(e) => handleInputChange(e)} />
+                                                <button type="button" className="btn btn-primary" onClick={saveChangeReplyData}>수정</button>
+                                            </div>
+                                        ) : (
+                                            <pre>{reply.replyContent}</pre>
+                                        )}
                                     </div>
                                 </div>
-                            </>
+
+                                {/* 내가 작성한 댓글 수정 삭제 */}
+
+                                <div className="row">
+                                    {selectedReplyIndex === null && reply.replyWriter === user.clientEmail ? (
+                                        <div className="col text-start">
+                                            <span className="me-2 btn btn-outline-primary btn-sm pointer" onClick={() => handleUpdateReplyContent(reply.replyId)}>수정</span>
+                                            <span className="btn btn-outline-danger btn-sm pointer" onClick={() => deleteReply(reply.replyId)}>삭제</span>
+                                        </div>
+
+                                    ) : (
+                                        <></>
+                                    )}
+                                    <div className="col  text-end">
+                                        <span className="me-2" onClick={() => handleComment(reply.replyId)}>댓글달기</span>
+                                        <span>b</span>
+                                    </div>
+                                </div>
+
+                                {selectedId === reply.replyId && (
+                                    <div className="row">
+                                        <div className="col-12">
+                                            <textarea className="form-control" />
+                                        </div>
+                                        <div className="col text-end mt-2">
+                                        <button className="btn btn-sm btn-primary">등록</button>
+                                        </div>
+                                    </div>
+                                )}
+
+                            </div>
                         ))}
                     </div>
                 </div>

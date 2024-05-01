@@ -96,8 +96,8 @@ export const Community: React.FC = () => {
                     <div className="col">
                         <ul className="community-content">
                             {list.map((content, index) => (
-                                <div className="hovering" onClick={()=>handleNavDetail(content.communityBoardId)}>
-                                <li key={index}>
+                                <div key={index} className="hovering" onClick={()=>handleNavDetail(content.communityBoardId)}>
+                                <li >
                                     <div className="row">
 
                                         <div className="col">

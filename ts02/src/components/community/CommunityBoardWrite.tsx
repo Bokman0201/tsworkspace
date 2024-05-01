@@ -104,7 +104,6 @@ export const CommunityBoardWrite: React.FC = () => {
 
   const handleChangeTitle = (e: ChangeEvent<HTMLInputElement>) => {
     setTitle(e.target.value)
-
   }
 
 
@@ -197,7 +196,7 @@ export const CommunityBoardWrite: React.FC = () => {
     <div className="container mt-3">
       <div className="row ">
         <div className="col-12">
-          <input className="form-control" name="communityBoardTitle" value={boardData.communityBoardTitle} onChange={handleChangeTitle} placeholder="title" />
+          <input className="form-control" name="communityBoardTitle" value={title} onChange={handleChangeTitle} placeholder="title" />
         </div>
       </div>
 

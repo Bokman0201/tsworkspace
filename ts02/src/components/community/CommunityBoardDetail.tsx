@@ -5,6 +5,10 @@ import axios from "axios";
 import { boardType } from "../../model/communityBoardModel";
 import { clientState } from "../../store/ClientStore";
 import './communityBoardStyle.css';
+import { FaHeart } from "react-icons/fa";
+import { FaRegHeart } from "react-icons/fa";
+import { AiFillLike } from "react-icons/ai";
+import { AiOutlineLike } from "react-icons/ai";
 
 
 
@@ -55,6 +59,7 @@ export const CommunityBoardDetail = () => {
 
 
     const [board, setBoard] = useState<boardType>();
+
     useEffect(() => {
         const boardId = sessionStorage.getItem(boardIdStateKey);
         console.log(boardId);
@@ -65,8 +70,7 @@ export const CommunityBoardDetail = () => {
         }
 
         getDetail();
-
-
+        getCommentList()
     }, []);
 
     const innerHtmlContent = () => {
@@ -127,7 +131,41 @@ export const CommunityBoardDetail = () => {
 
 
     //대댓글
+
     const [selectedId, setSelectedId] = useState<number | null>(null);
+
+    const [commentContent, setCommentContent] = useState<string>("");
+
+    const handleChangeComment = (e: ChangeEvent<HTMLTextAreaElement>) => {
+
+        setCommentContent(e.target.value)
+    }
+
+    const commentWrite = () => {
+
+        const boardId = sessionStorage.getItem(boardIdStateKey);
+
+        if (selectedId) {
+            axios({
+                url: `http://localhost:8080/replyWrite`,
+                method: 'post',
+                data: {
+                    replyWriter: user.clientEmail,
+                    replyContent: commentContent,
+                    replyParentId: selectedId,
+                    boardId: boardId
+                }
+            }).then(res => {
+                console.log(res.status)
+
+                if (res.status === 200) {
+                    getReplyList();
+                    setReplyContent("");
+                    //리스트 리로드
+                }
+            }).catch();
+        }
+    }
 
     const handleComment = (replyId: number) => {
         if (replyId === selectedId) {
@@ -137,6 +175,21 @@ export const CommunityBoardDetail = () => {
             setSelectedId(replyId);
         }
     }
+
+
+    //대댓글 리스트 
+    const [commentList, setCommentList] = useState<replyType[]>([]);
+    const getCommentList = async () => {
+
+        try {
+            const res = await axios.get(`http://localhost:8080/commentList/${boardId}`);
+            setCommentList(res.data)
+            console.log(res.data)
+        } catch {
+
+        }
+    }
+
 
     //댓글 수정
     const [selectedReplyIndex, setSelectedReplyIndex] = useState<number | null>(null);
@@ -196,6 +249,36 @@ export const CommunityBoardDetail = () => {
     }
 
 
+    //스크랩
+    const [isLike, setIsLike] = useState<boolean|undefined>();
+
+    useEffect(()=>{
+        getStatus();
+    },[user])
+
+    const getStatus =async()=>{
+
+        if(user.clientEmail){
+            const res = await axios.get(`http://localhost:8080/getLikeStatus/${boardId}/${user.clientEmail}`)
+            setIsLike(res.data);
+        }
+    }
+
+    const handleLike=()=>{
+        axios({
+            url:`http://localhost:8080/boardLike`,
+            method:'post',
+            data:{
+                boardId:boardId,
+                clientEmail: user.clientEmail
+            }
+        }).then(res=>{
+            console.log(res.data);
+            setIsLike(res.data)
+        }).catch();
+    }
+
+
 
     //버튼 드랍다운
 
@@ -213,11 +296,23 @@ export const CommunityBoardDetail = () => {
                 <div className="col">
                 </div>
             </div>
-            <div className="row mt-2 ">
-                <div className="col text-center"
-                    style={{ borderBottom: "1px solid", padding: '0.3em' }}
-                >
+            <div style={{ borderBottom: "1px solid", padding: '0.3em' }}
+                className="row mt-2 ">
+                <div className="col-12 text-center">
                     <h2>{board?.communityBoardTitle}</h2>
+                </div>
+                <div className="col-8">
+                   <span className="font-sm pointer"> 작성자 : {user.clientEmail}</span>
+                </div>
+                <div className="col-4 text-end">
+                <span className="pointer" onClick={handleLike}>
+                    {isLike?(
+                        <AiOutlineLike/>
+                    ):(
+                        <AiFillLike/>
+                    )}
+                    
+                    </span>
                 </div>
             </div>
 
@@ -314,26 +409,41 @@ export const CommunityBoardDetail = () => {
                                     )}
                                     <div className="col  text-end">
                                         <span className="me-2" onClick={() => handleComment(reply.replyId)}>댓글달기</span>
-                                        <span>b</span>
+                                        <span className="red">
+                                            <FaHeart />
+                                        </span>
                                     </div>
                                 </div>
 
                                 {selectedId === reply.replyId && (
-                                    <div className="row">
-                                        <div className="col-12">
-                                            <textarea className="form-control" />
+                                    <div className="row mt-2">
+                                        <div className="col-11 offset-1">
+                                            <textarea style={{ resize: "none" }} onChange={handleChangeComment} value={commentContent} className="form-control" />
                                         </div>
-                                        <div className="col text-end mt-2">
-                                        <button className="btn btn-sm btn-primary">등록</button>
+                                        <div className="col text-end mt-2 ">
+                                            <button className="btn btn-sm btn-primary" onClick={commentWrite}>등록</button>
                                         </div>
                                     </div>
                                 )}
 
+                                {/* 대댓글 목록 */}
+                                <div className="container mt-2">
+                                    {commentList
+                                        .filter(comment => comment.replyParentId === reply.replyId)
+                                        .map((comment, commentIndex) => (
+                                            <div className="row border" key={commentIndex}>
+                                                <div className="col">
+                                                    {comment.replyContent}
+                                                </div>
+                                            </div>
+                                        ))}
+                                </div>
                             </div>
                         ))}
                     </div>
                 </div>
-            ) : (<></>)}
+            ) : null}
+
         </div>
 
     );

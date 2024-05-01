@@ -13,7 +13,24 @@ import { NavLink } from 'react-router-dom';
 const Header: React.FC = () => {
     const [clientStore, setClientStore] = useRecoilState(clientState);
 
+    const [darkMode, setDarkMode] = useState(false);
 
+    const toggleDarkMode = () => {
+        setDarkMode(!darkMode);
+        // root 요소에 다크 모드 클래스를 추가 또는 제거
+        const rootElement = document.getElementById('root');
+        if (rootElement) {
+            if (darkMode) {
+                rootElement.classList.remove('dark-mode');
+            } else {
+                rootElement.classList.add('dark-mode');
+            }
+        }
+    };
+
+    const handleCheckboxChange = () => {
+        toggleDarkMode();
+    };
     const [show, setShow] = useState<boolean>(false);
 
     const handleClose = () => setShow(false);
@@ -37,11 +54,28 @@ const Header: React.FC = () => {
                     </Nav>
                 </Container>
                 <Nav>
+
+                    <div className="form-check form-switch">
+                        <input
+                            className="form-check-input"
+                            type="checkbox"
+                            role="switch"
+                            id="flexSwitchCheckDefault"
+                            onChange={handleCheckboxChange}
+                            checked={darkMode}
+                        />
+                        <label className="form-check-label" htmlFor="flexSwitchCheckDefault">
+                        </label>
+                    </div>
+                </Nav>
+                <Nav>
                     <div className='me-2'>
                         <img onClick={handleShow} style={{ borderRadius: "50%" }} src='https://picsum.photos/id/237/25/25' />
                     </div>
                 </Nav>
             </Navbar>
+
+
             <Offcanvas show={show} onHide={handleClose} placement='end'>
                 <Container>
 

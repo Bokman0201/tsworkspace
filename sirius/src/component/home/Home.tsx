@@ -6,12 +6,13 @@ export const Home =()=>{
     const  navigator = useNavigate();
 
     useEffect(()=>{
-        navigator('/login')
+        //console.log(`${process.env.REACT_APP_REST_API_URL}`)
+
+        navigator('/')
     },[])
 
     return(
         <div>
-            <input/>
         </div>
     );
 }

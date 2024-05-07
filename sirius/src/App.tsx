@@ -39,7 +39,7 @@ const App: React.FC = () => {
 
   useEffect(() => {
 
-    const sock = new SockJS('http://localhost:8080/ws'); // SockJS를 사용하여 연결
+    const sock = new SockJS(`${process.env.REACT_APP_REST_API_URL}/ws`); // SockJS를 사용하여 연결
 
     // 웹소켓 연결
     socket = sock as WebSocket;

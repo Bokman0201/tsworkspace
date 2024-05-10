@@ -1,0 +1,9 @@
+.client-search-container {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.client-search-container.open {
+    max-height: 500px; /* 원하는 높이로 설정하세요 */
+}

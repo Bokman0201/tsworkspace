@@ -10,6 +10,8 @@ import useClientInfo from './component/store/UserStoer';
 import { MyPageMain } from './component/client/mypage/MypageMain';
 import { Infoupdate } from './component/client/mypage/Infoupdate';
 
+import './App.css';
+
 
 
 const App: React.FC = () => {
@@ -83,7 +85,7 @@ const App: React.FC = () => {
         </div>
       )}
 
-      <div className='container'>
+      <main className='container'>
         <Routes>
           <Route path='/' element={<Home />} />
           <Route path='login' element={<LoginPage />} />
@@ -91,12 +93,13 @@ const App: React.FC = () => {
           <Route path='/mypage' element={<MyPageMain />} />
           <Route path='/infoupdate' element={<Infoupdate />} />
         </Routes>
-      </div>
+      </main>
 
       {location.pathname !== '/login' && (
-        <div style={{ position: "fixed", bottom: 0 }}>
+        <footer style={{ position: "fixed", bottom: 0 }}>
           <Footer />
-        </div>
+          <footer>1</footer>
+        </footer>
       )}
     </div>
   );

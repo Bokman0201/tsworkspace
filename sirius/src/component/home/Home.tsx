@@ -22,7 +22,7 @@ export const Home =()=>{
 
     return(
         <div className="">
-            test<input type="file"/>
+            test2<input type="file"/>
             {memberList.map((member)=>(<div key={member}>{member}</div>))}
         </div>
     );

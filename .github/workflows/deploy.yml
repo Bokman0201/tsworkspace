@@ -32,4 +32,4 @@ jobs:
                 ref: ${{ github.ref }}
               preset: react
             build_script: |
-              cd your-subdirectory-name
+              cd sirius

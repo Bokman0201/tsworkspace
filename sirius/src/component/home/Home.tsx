@@ -22,7 +22,7 @@ export const Home =()=>{
 
     return(
         <div className="">
-            파일<input type="file"/>
+            git actions test<input type="file"/>
             {memberList.map((member)=>(<div key={member}>{member}</div>))}
         </div>
     );

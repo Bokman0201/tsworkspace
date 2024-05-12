@@ -22,6 +22,7 @@ export const Home =()=>{
 
     return(
         <div className="">
+            <input type="file"/>
             {memberList.map((member)=>(<div key={member}>{member}</div>))}
         </div>
     );

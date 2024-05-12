@@ -11,6 +11,7 @@ import { MyPageMain } from './component/client/mypage/MypageMain';
 import { Infoupdate } from './component/client/mypage/Infoupdate';
 
 import './App.css';
+import { InviteList } from './component/client/invite/InviteList';
 
 
 
@@ -92,6 +93,7 @@ const App: React.FC = () => {
           <Route path='/chat' element={<ChatHome />} />
           <Route path='/mypage' element={<MyPageMain />} />
           <Route path='/infoupdate' element={<Infoupdate />} />
+          <Route path='InviteList' element={<InviteList/>}/>
         </Routes>
       </main>
 

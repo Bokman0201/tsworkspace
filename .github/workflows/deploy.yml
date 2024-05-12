@@ -31,3 +31,5 @@ jobs:
                 url: git@github.com:${{ github.repository }}.git
                 ref: ${{ github.ref }}
               preset: react
+            build_script: |
+              cd your-subdirectory-name

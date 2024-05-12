@@ -17,7 +17,7 @@ export const InviteReceivedList = () => {
 
     const getReceivedList = async () => {
         if (clientInfo.clientId) {
-            const res = await axios.get(`http://localhost:8080/invite/received/${clientInfo.clientId}`)
+            const res = await axios.get(`${process.env.REACT_APP_REST_API_URL}/invite/received/${clientInfo.clientId}`)
             setReceivedList(res.data);
             console.log(res.data)
         }

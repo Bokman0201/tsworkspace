@@ -12,7 +12,7 @@ export const InviteListIcon = () => {
         console.log(clientInfo)
         if (clientInfo) {
             try {
-                const res = await axios.get(`http://localhost:8080/invite/push/${clientInfo.clientId}`)
+                const res = await axios.get(`${process.env.REACT_APP_REST_API_URL}/invite/push/${clientInfo.clientId}`)
                 setCount(res.data)
                 console.log(res.data)
             } catch {
@@ -25,7 +25,7 @@ export const InviteListIcon = () => {
     useEffect(() => {
         getPushAlarm();
     }, [clientInfo])
-    
+
 
     return (
         <>

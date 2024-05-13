@@ -1,0 +1,14 @@
+.selector {
+    width: 70px; /* 이미지의 초기 너비 */
+    height: 70px; /* 이미지의 초기 높이 */
+    display: flex;
+    justify-content: center; /* 수평 가운데 정렬 */
+    align-items: center; /* 수직 가운데 정렬 */
+}
+
+.profile-image {
+    max-width: 100%; /* 이미지의 최대 너비는 부모 요소의 너비를 초과하지 않음 */
+    max-height: 100%; /* 이미지의 최대 높이는 부모 요소의 높이를 초과하지 않음 */
+    border-radius: 50%;
+    pointer-events: none;
+}

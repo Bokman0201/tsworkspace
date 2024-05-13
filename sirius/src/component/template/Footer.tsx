@@ -8,8 +8,9 @@ export const Footer = () => {
 
     return (
         <nav className="fixed-nav">
-            {clientInfo.clientId}
+           
             <ul>
+                
                 <li><NavLink to={"/"}>Home</NavLink></li>
                 <li><NavLink to={"/chat"}>chat</NavLink></li>
                 <li><NavLink to={"/friend"}>Friends</NavLink></li>

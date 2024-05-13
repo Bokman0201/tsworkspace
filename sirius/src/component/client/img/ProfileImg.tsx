@@ -1,13 +1,14 @@
 import React from "react";
 
-export const ProfileImg =()=>{
+export const ProfileImg = () => {
 
-    const handleContextMenu = (e:React.MouseEvent<HTMLImageElement>) => {
+    const handleContextMenu = (e: React.MouseEvent<HTMLImageElement>) => {
         e.preventDefault(); // 기본 동작 막기
     }
 
-    return(
-<img src="https://dummyimage.com/70x70/000/fff" style={{borderRadius:"50%", pointerEvents: "none"}} />
-        
+    return (
+        <div className="col d-flex justify-content-center align-items-center selector">
+            <img src="https://dummyimage.com/70x70/000/fff" className="profile-image" alt="Profile" onContextMenu={handleContextMenu} />
+        </div>
     );
 }

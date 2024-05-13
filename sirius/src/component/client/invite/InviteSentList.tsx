@@ -49,7 +49,7 @@ export const InviteSentList = () => {
                                     <div className="col">
                                         <div className="row">
                                             <div className="col-12">
-                                                {item.clientId}
+                                                {item.invitedClient}
                                             </div>
                                             <div className="col-12" style={{ fontSize: "12px" }}>
                                                 {item.inviteTime.split(" ")[0]}

@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import useClientInfo from "../../store/UserStoer";
+import { error } from "console";
 
 type inviteType = {
     clientId: string
@@ -34,12 +35,28 @@ export const InviteReceivedList = () => {
         }
     }
 
-    const handleResponseButton = (val: string) => {
-        if (val === 'refuse') {
-            console.log("거절")
-        } else if (val === "accept") {
-            alert("accept")
-        }
+    const handleResponseButton = (val: string, item: inviteType) => {
+
+        //string 보내서 백에서 처리
+        axios({
+            url: `${process.env.REACT_APP_REST_API_URL}/invite/response`,
+            method: "post",
+            data: {
+                inviteListDto: item,
+                resultString: val
+            }
+
+
+        }).then(res => {
+            console.log(res.data)
+
+            getReceivedList();
+
+
+        }).catch(err=>{
+            console.log(err.request.status)
+        })
+
     };
 
     useEffect(() => {
@@ -52,7 +69,7 @@ export const InviteReceivedList = () => {
 
             {!isLoading && (
                 <>
-                    {receivedList ? (<>
+                    {receivedList && receivedList.length>0 ? (<>
                         {
                             receivedList.map((item, index) => (
                                 <div className="border p-2 mb-2" key={index}>
@@ -61,6 +78,7 @@ export const InviteReceivedList = () => {
                                             <div className="row">
                                                 <div className="col-12">
                                                     {item.clientId}
+
                                                 </div>
                                                 <div className="col-12" style={{ fontSize: "12px" }}>
                                                     {item.inviteTime.split(" ")[0]}
@@ -68,8 +86,8 @@ export const InviteReceivedList = () => {
                                             </div>
                                         </div>
                                         <div className="col d-flex align-items-center justify-content-end">
-                                            <button type="button" className="btn btn-primary btn-sm" onClick={() => handleResponseButton("accept")}>수락</button>
-                                            <button type="button" className="btn btn-danger btn-sm ms-2" onClick={() => handleResponseButton("refuse")}>거절</button>
+                                            <button type="button" className="btn btn-primary btn-sm" onClick={() => handleResponseButton("accept", item)}>수락</button>
+                                            <button type="button" className="btn btn-danger btn-sm ms-2" onClick={() => handleResponseButton("refuse", item)}>거절</button>
                                         </div>
                                     </div>
                                 </div>

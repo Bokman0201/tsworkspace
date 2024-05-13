@@ -78,6 +78,9 @@ export const ClientSearchInput = ({ setIsHeaderClick }: { setIsHeaderClick: SetI
         }).then(res=>{
 
             console.log(res.data)
+            if(res.data === 'accept'){
+                alert("이미 상대방의 요청이 있어 친구목록에 추가됩니다.")
+            }
 
         }).catch(err=>{
             

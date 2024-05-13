@@ -22,8 +22,7 @@ export const Home =()=>{
 
     return(
         <div className="">
-            되어라!<input type="file"/>
-            {memberList.map((member)=>(<div key={member}>{member}</div>))}
+            홈에 뭐 추가하지?
         </div>
     );
 }

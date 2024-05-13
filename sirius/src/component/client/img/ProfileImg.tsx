@@ -7,7 +7,7 @@ export const ProfileImg =()=>{
     }
 
     return(
-<img src="https://dummyimage.com/100x100/000/fff" style={{borderRadius:"50%", pointerEvents: "none"}} />
+<img src="https://dummyimage.com/70x70/000/fff" style={{borderRadius:"50%", pointerEvents: "none"}} />
         
     );
 }

@@ -19,6 +19,9 @@ export const Header = () => {
             case 'mypage':
                 setTitle("내정보")
                 break;
+            case 'friend':
+                setTitle("친구목록")
+                break;
             case '':
                 setTitle("홈")
                 break;
@@ -50,10 +53,8 @@ export const Header = () => {
 
             {title === "홈" && (
 
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-
+                <div className="me-3">
                     <span onClick={moveInviteList}><InviteListIcon /></span>
-
                 </div>
             )}
             {title === "채팅" && (
@@ -62,7 +63,7 @@ export const Header = () => {
             {title === '친구요청' && (
                 <div>
                     <div className="input-group ms-2">
-                        {isClick && (<ClientSearchInput setIsHeaderClick={setIsClick}/>)}
+                        {isClick && (<ClientSearchInput setIsHeaderClick={setIsClick} />)}
                         <button onClick={handleSearchButton} className="btn btn-sm btn-outline-primary">{isClick ? (<span>닫기</span>) : (<span>친구찾기</span>)}</button>
                     </div>
                 </div>

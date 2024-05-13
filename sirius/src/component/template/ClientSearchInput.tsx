@@ -1,10 +1,17 @@
 import React, { ChangeEvent, useEffect, useLayoutEffect, useState } from "react";
 import { clientSearch } from "../helper/HeaderHelper";
+import axios from "axios";
+import useClientInfo from "../store/UserStoer";
 
-export const ClientSearchInput = () => {
+type SetIsHeaderClickType = (value: boolean) => void;
+
+export const ClientSearchInput = ({ setIsHeaderClick }: { setIsHeaderClick: SetIsHeaderClickType }) => {
     const [text, setText] = useState<string>("");
     const [clientList, setClientList] = useState<string[]>([]);
     const [isClick, setIsClick] = useState<boolean>(false);
+
+    const { clientInfo, setClientInfo, deleteClientInfo } = useClientInfo();
+
 
     const inputChange = (e: ChangeEvent<HTMLInputElement>) => {
         setText(e.target.value);
@@ -27,7 +34,6 @@ export const ClientSearchInput = () => {
 
     const handleInputClick = () => {
 
-        //setIsClick(true);
     }
 
     const handleOutsideClick = (e: MouseEvent) => {
@@ -38,9 +44,12 @@ export const ClientSearchInput = () => {
 
         if (!result) {
             setIsClick(false);
+            if(isClick){
+                setIsHeaderClick(false)
+            }
+
         }
         else if (result) {
-            let result = clickedElementId === "searchClient"
             setIsClick(true);
         }
 
@@ -57,6 +66,25 @@ export const ClientSearchInput = () => {
         }
     }, []);
 
+    const handleSendRequest =(receiver: string)=>{
+        
+        axios({
+            url:`${process.env.REACT_APP_REST_API_URL}/invite/send`,
+            method:'post',
+            data:{
+                clientId: clientInfo.clientId,
+                invitedClient: receiver
+              }
+        }).then(res=>{
+
+            console.log(res.data)
+
+        }).catch(err=>{
+            
+            console.error(err)
+        })
+
+    }
 
     useEffect(() => {
         handleSearch();
@@ -72,14 +100,14 @@ export const ClientSearchInput = () => {
             </form>
 
             {isClick && clientList.length > 0 && (
-                <div style={{ position: "absolute", top: "100%", left: 0, backgroundColor: "" }} className="border w-100">
+                <div style={{ position: "absolute", top: "100%", left: 0, backgroundColor: "white" }} className="border w-100">
                     {clientList.map((client, index) => (
                         <div className="row" key={index}>
-                            <div className="col"  onClick={() => handleSearchClientClick(client)}>
+                            <div className="col" onClick={() => handleSearchClientClick(client)}>
                                 {client}
                             </div>
                             <div className="col text-end">
-                                <button>추가</button>
+                                <button className="btn btn-sm btn-success" onClick={()=>handleSendRequest(client)}>추가</button>
                             </div>
                         </div>
                     ))}

@@ -51,20 +51,21 @@ export const Header = () => {
             {title === "홈" && (
 
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                    {!isClick && (
 
-                        <span onClick={moveInviteList}><InviteListIcon /></span>
-                    )}
-                    <div>
-                        <div className="input-group ms-2">
-                            {isClick && (<ClientSearchInput />)}
-                            <button onClick={handleSearchButton} className="btn btn-sm btn-outline-primary">{isClick ? (<span>닫기</span>) : (<span>친구찾기</span>)}</button>
-                        </div>
-                    </div>
+                    <span onClick={moveInviteList}><InviteListIcon /></span>
+
                 </div>
             )}
             {title === "채팅" && (
                 <AddChat />
+            )}
+            {title === '친구요청' && (
+                <div>
+                    <div className="input-group ms-2">
+                        {isClick && (<ClientSearchInput setIsHeaderClick={setIsClick}/>)}
+                        <button onClick={handleSearchButton} className="btn btn-sm btn-outline-primary">{isClick ? (<span>닫기</span>) : (<span>친구찾기</span>)}</button>
+                    </div>
+                </div>
             )}
 
         </header>

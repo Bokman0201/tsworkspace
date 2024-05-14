@@ -14,7 +14,7 @@ export const Footer = () => {
                 <li><NavLink to={"/"}>Home</NavLink></li>
                 <li><NavLink to={"/chat"}>chat</NavLink></li>
                 <li><NavLink to={"/friend"}>Friends</NavLink></li>
-                <li><NavLink to={"/friend"}>Group</NavLink></li>
+                <li><NavLink to={"/group"}>Group</NavLink></li>
 
                 {clientInfo.clientId !== ""?(
                     <li><NavLink to={"/mypage"}>MyPage</NavLink></li>

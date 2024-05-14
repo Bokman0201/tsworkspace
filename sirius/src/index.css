@@ -1,3 +1,15 @@
 .pointer span{
   cursor: pointer;
 }
+.scroll-container {
+  overflow-x: scroll; /* 가로 스크롤만 표시 */
+  overflow-y: hidden; /* 세로 스크롤 숨기기 */
+}
+
+.scroll-container::-webkit-scrollbar {
+  display: none; /* 웹킷(Chrome, Safari 등) 브라우저의 기본 스크롤 바 숨기기 */
+}
+
+.scroll-container {
+  scrollbar-width: none; /* 파이어폭스 브라우저의 기본 스크롤 바 숨기기 */
+}

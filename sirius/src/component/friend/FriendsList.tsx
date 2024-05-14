@@ -3,6 +3,8 @@ import { FriendInfo } from "./FriendInfo";
 import axios from "axios";
 import useClientInfo from "../store/UserStoer";
 import { SlArrowDown } from "react-icons/sl";
+import { FriendProfileModal } from "./FriendProfileModal";
+import './friend.css';
 
 type friendListType = {
     ownerId: string,
@@ -41,6 +43,13 @@ export const FriendsList = () => {
         setIsOpen(!isOpen)
     }
 
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const toggleModal = () => {
+        console.log(isModalOpen)
+        setIsModalOpen(!isModalOpen);
+    };
+
 
     return (
         <div className=" ">
@@ -69,6 +78,15 @@ export const FriendsList = () => {
                 ) : (
                     <></>
                 )}
+            </div>
+
+
+            <div className={isOpen ? "modal modal-open" : "modal"}>
+                <div className="modal-content">
+                    <span className="close" onClick={toggleModal}>&times;</span>
+                    <h2>친구 프로필</h2>
+                    <p>친구의 정보를 여기에 표시합니다.</p>
+                </div>
             </div>
         </div>
     );

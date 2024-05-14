@@ -19,6 +19,9 @@ export const Header = () => {
             case 'mypage':
                 setTitle("내정보")
                 break;
+            case 'group':
+                setTitle("그룹")
+                break;
             case 'friend':
                 setTitle("친구목록")
                 break;

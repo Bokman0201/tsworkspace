@@ -13,6 +13,7 @@ import { Infoupdate } from './component/client/mypage/Infoupdate';
 import './App.css';
 import { InviteList } from './component/client/invite/InviteList';
 import { FriendsList } from './component/friend/FriendsList';
+import { GroupsMain } from './component/groups/GroupMain';
 
 
 
@@ -87,7 +88,7 @@ const App: React.FC = () => {
         </div>
       )}
 
-      <main className='container'>
+      <main className='container-fluid'>
         <Routes>
           <Route path='/' element={<Home />} />
           <Route path='login' element={<LoginPage />} />
@@ -96,6 +97,7 @@ const App: React.FC = () => {
           <Route path='/infoupdate' element={<Infoupdate />} />
           <Route path='InviteList' element={<InviteList/>}/>
           <Route path='/friend' element={<FriendsList/>}/>
+          <Route path='/group' element={<GroupsMain/>}/>
         </Routes>
       </main>
 

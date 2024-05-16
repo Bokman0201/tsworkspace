@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { LoginPage } from './component/login/LoginPage';
 import { Home } from './component/home/Home';
@@ -14,6 +14,7 @@ import './App.css';
 import { InviteList } from './component/client/invite/InviteList';
 import { FriendsList } from './component/friend/FriendsList';
 import { GroupsMain } from './component/groups/GroupMain';
+import { GroupChatting } from './component/groups/GroupChatting';
 
 
 
@@ -80,11 +81,29 @@ const App: React.FC = () => {
     };
   }, [clientInfo]);
 
+
+  const [innerHeight, setInnerHeight] = useState(window.innerHeight);
+  const [size, setSize] = useState<number>(0);
+
+  const resizeListener = () => {
+      setInnerHeight(window.innerHeight);
+  };
+  useEffect(() => {
+      window.addEventListener("resize", resizeListener);
+      console.log("innerHeight", innerHeight);
+
+      let chattingRoomSize = innerHeight - 183;
+      setSize(chattingRoomSize)
+      return () => {
+          window.removeEventListener("resize", resizeListener);
+      };
+  }, [innerHeight]); // 빈
+
   return (
     <div>
       {location.pathname !== '/login' && (
         <div className=''>
-          <Header />
+          <Header size={size}/>
         </div>
       )}
 
@@ -98,6 +117,7 @@ const App: React.FC = () => {
           <Route path='InviteList' element={<InviteList/>}/>
           <Route path='/friend' element={<FriendsList/>}/>
           <Route path='/group' element={<GroupsMain/>}/>
+          <Route path='/groupChat' element={<GroupChatting size={size}/>}/>
         </Routes>
       </main>
 

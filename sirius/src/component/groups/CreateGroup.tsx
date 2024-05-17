@@ -3,6 +3,9 @@ import ReactModal from "react-modal";
 import { useModalStatus } from "../store/ModalStore";
 import "./group.css";
 import { Form } from "react-router-dom";
+import { group } from "console";
+import axios from "axios";
+import useClientInfo from "../store/UserStoer";
 
 const customModalStyles: ReactModal.Styles = {
     overlay: {
@@ -29,22 +32,54 @@ const customModalStyles: ReactModal.Styles = {
         backgroundColor: "white",
         justifyContent: "center",
         overflow: "auto",
-      },
+    },
 
 };
 
 export const CreateGroup: React.FC = () => {
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const { clientInfo } = useClientInfo();
 
     const { status, setStatus, deleteStatus } = useModalStatus();
 
+    const [groupName, setGroupName] = useState<string>('');
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setGroupName(e.target.value);
+    }
+
+    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault()
+        if (groupName.length > 0) {
+            const result = window.confirm("등록 하시겠습니까?")
+            if (result) {
+                axios({
+                    url: `${process.env.REACT_APP_REST_API_URL}/groups/create`,
+                    method: 'post',
+                    data: { groupName: groupName, groupHost: clientInfo.clientId }
+                }).then(res=>{
+                    if(res.status===200){
+                        setGroupName('')
+                        alert("등록되었습니다.")
+
+                        deleteStatus()
+                    }
+                }).catch();
+            } else {
+                alert("cancel")
+            }
+
+        }
+    }
+
     useEffect(() => {
+        console.log(groupName)
         setIsModalOpen(status)
     }, [status])
 
-    
+
     return (
-        <div className="modal-parent"> {/* 부모 요소 */}
+        <div className=""> {/* 부모 요소 */}
             <ReactModal
                 isOpen={isModalOpen}
                 onRequestClose={deleteStatus}
@@ -60,29 +95,31 @@ export const CreateGroup: React.FC = () => {
 
                 <div className="modal-body mt-4">
                     <div className="container">
-                        <form>
+                        <form onSubmit={handleSubmit}>
                             <div className="row">
                                 <div className="col">
-                                    <input className="form-control" placeholder="enter your group name" />
+                                    <input onChange={handleInputChange} value={groupName} className="form-control" placeholder="enter your group name" />
                                 </div>
                             </div>
                             <div className="row mt-2">
                                 <div className="col ">
-                                <select className="form-select">
-                                    <option>회사</option>
-                                    <option>모임</option>
-                                    <option>기타</option>
-                                </select>
+                                    <select className="form-select">
+                                        <option>회사</option>
+                                        <option>모임</option>
+                                        <option>기타</option>
+                                    </select>
                                 </div>
                             </div>
+                            <div className="modal-footer mt-4">
+                                <button type="submit" className=" btn btn-primary">Save changes</button>
+                                <button type="button" onClick={deleteStatus} className=" ms-2 btn btn-secondary">Close</button>
+                            </div>
+
                         </form>
                     </div>
                 </div>
 
-                <div className="modal-footer">
-                    <button className=" btn btn-primary">Save changes</button>
-                    <button onClick={deleteStatus} className=" ms-2 btn btn-secondary">Close</button>
-                </div>
+
             </ReactModal >
         </div >
     );

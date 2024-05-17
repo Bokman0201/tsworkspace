@@ -14,12 +14,7 @@
         margin-right: calc(-.5* var(--bs-gutter-x));
         margin-left: calc(-.5* var(--bs-gutter-x));
   }
-  .modal-parent {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
+
     
     .modal-header {
       display: flex;
@@ -51,6 +46,7 @@
       justify-content: flex-end;
       padding: 10px;
       border-top: 1px solid #ddd;
+      margin-bottom: 20px;
     }
     
     @media (min-width: 768px) { /* md 크기 이상인 화면에 대한 미디어 쿼리 */

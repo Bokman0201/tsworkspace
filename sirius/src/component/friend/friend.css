@@ -57,3 +57,10 @@
       padding: 10px; /* 패딩 조정 */
     }
   } 
+
+  .fullscreen-offcanvas {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: none !important;
+    max-height: none !important;
+}

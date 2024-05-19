@@ -15,6 +15,7 @@ import { InviteList } from './component/client/invite/InviteList';
 import { FriendsList } from './component/friend/FriendsList';
 import { GroupsMain } from './component/groups/GroupMain';
 import { GroupChatting } from './component/groups/GroupChatting';
+import { GroupDetail } from './component/groups/GroupDetail';
 
 
 
@@ -118,6 +119,7 @@ const App: React.FC = () => {
           <Route path='/friend' element={<FriendsList/>}/>
           <Route path='/group' element={<GroupsMain/>}/>
           <Route path='/groupChat' element={<GroupChatting size={size}/>}/>
+          <Route path='/group/detail' element={<GroupDetail/>}/>
         </Routes>
       </main>
 

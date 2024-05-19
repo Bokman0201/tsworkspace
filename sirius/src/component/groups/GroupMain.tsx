@@ -6,6 +6,7 @@ import axios from "axios";
 import { error } from "console";
 import { GorupPreView } from "./GorupPreView";
 import useClientInfo from "../store/UserStoer";
+import { UseGroupNo } from "../store/GroupStore";
 
 
 
@@ -13,6 +14,7 @@ export const GroupsMain: React.FC = () => {
     const navigator = useNavigate();
 
     const { clientInfo } = useClientInfo();
+    const {groupNo, setGroupNo, deleteGroupNo} = UseGroupNo();
 
     const [groupList, setGroupList] = useState<number[]>();
     const [loading, setLoading] = useState<boolean>(false);
@@ -37,6 +39,18 @@ export const GroupsMain: React.FC = () => {
         getGroupList();
     }, [clientInfo])
 
+
+    const moveDetail = (no: number) => {
+        const sessionNo = sessionStorage.getItem("groupNo");
+    
+        if (sessionNo) {
+            sessionStorage.removeItem("groupNo");
+        }
+        sessionStorage.setItem("groupNo", JSON.stringify(no));
+        setGroupNo(no);
+        navigator("/group/detail");
+    };
+    
     return (
 
         <div className="scroll">
@@ -47,7 +61,9 @@ export const GroupsMain: React.FC = () => {
             ) : (
                 <div className="list">
                     {groupList?.map((groupNo, index) => (
-                        <GorupPreView groupNo={groupNo} key={index} />
+                        <div className="" onClick={()=>moveDetail(groupNo)}>
+                            <GorupPreView groupNo={groupNo} key={index} />
+                        </div>
                     ))}
                 </div>
 

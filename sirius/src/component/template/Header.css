@@ -1,9 +1,32 @@
-.client-search-container {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s ease;
-}
-
-.client-search-container.open {
-    max-height: 500px; /* 원하는 높이로 설정하세요 */
-}
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: white; /* 배경색 설정 */
+    z-index: 1000; /* 다른 요소 위에 오도록 z-index 설정 */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+    padding: 10px; /* 내부 여백 */
+    display: flex; /* Flexbox 레이아웃 */
+    justify-content: space-between; /* 공간을 균등하게 분배 */
+    align-items: center; /* 세로로 가운데 정렬 */
+  }
+  
+  header h3 {
+    margin: 0; /* 제목의 기본 마진 제거 */
+  }
+  
+  .me-3, .ms-2 {
+    margin: 0 0.5rem; /* Bootstrap의 margin 클래스를 흉내냄 */
+  }
+  
+  .input-group {
+    display: flex;
+    align-items: center;
+  }
+  
+  .btn-outline-primary {
+    margin-left: 0.5rem;
+  }
+  
+  

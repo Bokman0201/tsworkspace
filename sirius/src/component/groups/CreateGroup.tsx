@@ -2,17 +2,15 @@ import React, { useEffect, useState } from "react";
 import ReactModal from "react-modal";
 import { useModalStatus } from "../store/ModalStore";
 import "./group.css";
-import { Form } from "react-router-dom";
-import { group } from "console";
 import axios from "axios";
 import useClientInfo from "../store/UserStoer";
 
 const customModalStyles: ReactModal.Styles = {
     overlay: {
-        backgroundColor: " rgba(0, 0, 0, 0.4)",
+        backgroundColor: "rgba(0, 0, 0, 0.4)",
         width: "100%",
         height: "100vh",
-        zIndex: "10",
+        zIndex: 1500, // header보다 높게 설정
         position: "fixed",
         top: "0",
         left: "0",
@@ -23,7 +21,7 @@ const customModalStyles: ReactModal.Styles = {
         height: '100%', // 초기 높이 설정
         width: '100%',
         maxHeight: '100vh',
-        zIndex: "150",
+        zIndex: 1600, // header보다 높게 설정
         position: "absolute",
         top: "50%",
         left: "50%",
@@ -33,7 +31,6 @@ const customModalStyles: ReactModal.Styles = {
         justifyContent: "center",
         overflow: "auto",
     },
-
 };
 
 export const CreateGroup: React.FC = () => {
@@ -57,29 +54,25 @@ export const CreateGroup: React.FC = () => {
                     url: `${process.env.REACT_APP_REST_API_URL}/groups/create`,
                     method: 'post',
                     data: { groupName: groupName, groupHost: clientInfo.clientId }
-                }).then(res=>{
-                    if(res.status===200){
+                }).then(res => {
+                    if (res.status === 200) {
                         setGroupName('')
                         alert("등록되었습니다.")
-
                         deleteStatus()
                     }
                 }).catch();
             } else {
                 alert("cancel")
             }
-
         }
     }
 
     useEffect(() => {
-        console.log(groupName)
         setIsModalOpen(status)
     }, [status])
 
-
     return (
-        <div className=""> {/* 부모 요소 */}
+        <div className="">
             <ReactModal
                 isOpen={isModalOpen}
                 onRequestClose={deleteStatus}
@@ -102,7 +95,7 @@ export const CreateGroup: React.FC = () => {
                                 </div>
                             </div>
                             <div className="row mt-2">
-                                <div className="col ">
+                                <div className="col">
                                     <select className="form-select">
                                         <option>회사</option>
                                         <option>모임</option>
@@ -111,16 +104,13 @@ export const CreateGroup: React.FC = () => {
                                 </div>
                             </div>
                             <div className="modal-footer mt-4">
-                                <button type="submit" className=" btn btn-primary">Save changes</button>
-                                <button type="button" onClick={deleteStatus} className=" ms-2 btn btn-secondary">Close</button>
+                                <button type="submit" className="btn btn-primary">Save changes</button>
+                                <button type="button" onClick={deleteStatus} className="ms-2 btn btn-secondary">Close</button>
                             </div>
-
                         </form>
                     </div>
                 </div>
-
-
-            </ReactModal >
-        </div >
+            </ReactModal>
+        </div>
     );
 }

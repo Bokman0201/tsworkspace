@@ -16,6 +16,7 @@ import { FriendsList } from './component/friend/FriendsList';
 import { GroupsMain } from './component/groups/GroupMain';
 import { GroupChatting } from './component/groups/GroupChatting';
 import { GroupDetail } from './component/groups/GroupDetail';
+import { ChatContent } from './component/chat/ChatContent';
 
 
 
@@ -121,9 +122,13 @@ const App: React.FC = () => {
           <Route path='/groupChat' element={<GroupChatting size={size}/>}/>
           <Route path='/group/detail' element={<GroupDetail/>}/>
         </Routes>
+
+        <Routes>
+          <Route path='chatRoom' element={<ChatContent/>}/>
+        </Routes>
       </main>
 
-      {location.pathname !== '/login' && (
+      {location.pathname !== '/login' &&location.pathname !== '/chatRoom' && (
         <footer style={{ position: "fixed", bottom: 0 }}>
           <Footer />
           <footer>1</footer>

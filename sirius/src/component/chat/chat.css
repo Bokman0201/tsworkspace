@@ -1,16 +1,95 @@
 .container-m-none {
-    margin-right: auto;
-    margin-left: auto;
-    padding-right: 0;
-    padding-left: 0;
+  margin-right: auto;
+  margin-left: auto;
+  padding-right: 0;
+  padding-left: 0;
+}
+
+.row-default {
+  --bs-gutter-x: 0;
+  --bs-gutter-y: 0;
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: calc(-1* var(--bs-gutter-y));
+  margin-right: calc(-.5* var(--bs-gutter-x));
+  margin-left: calc(-.5* var(--bs-gutter-x));
+}
+
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.message-list {
+  flex: 1;
+  padding: 0px;
+  margin-bottom: 10px;
+  overflow-y: auto;
+}
+
+.message {
+  margin-bottom: 10px;
+  padding: 10px;
+  background: #f1f1f1;
+  border-radius: 5px;
+}
+
+.message-input-container {
+  position: fixed;
+  margin-bottom: 0px;
+  bottom: 0px;
+  left: 0;
+  width: 100%;
+  background: white;
+}
+
+.chat-input-row {
+  display: flex;
+  justify-content: center;
+}
+
+.chat-input-col {
+  width: 100%;
+}
+
+.input-group {
+  display: flex;
+}
+
+
+.input-button {
+  padding: 10px;
+  border: 1px solid #007bff;
+  border-radius: 0 4px 4px 0;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+}
+
+.input-button:disabled {
+  background-color: #cccccc;
+}
+
+.input-button:hover:not(:disabled) {
+  background-color: #0056b3;
+}
+
+/* 미디어 쿼리 추가 */
+@media (min-width: 992px) {
+  .chat-input-col {
+    width: 50%;
   }
 
-  .row-default{
-        --bs-gutter-x: 0;
-        --bs-gutter-y: 0;
-        display: flex;
-        flex-wrap: wrap;
-        margin-top: calc(-1* var(--bs-gutter-y));
-        margin-right: calc(-.5* var(--bs-gutter-x));
-        margin-left: calc(-.5* var(--bs-gutter-x));
+
+}
+
+@media (max-width: 991.98px) {
+  .chat-input-col {
+    width: 100%;
   }
+
+  .message-input-container {
+    width: 100%;
+  }
+}

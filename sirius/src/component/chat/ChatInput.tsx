@@ -1,10 +1,11 @@
 import React, { useRef, useState } from "react";
 import { IoIosSend } from "react-icons/io";
+import "./chat.css";
 
 interface ChatInputProps {
     moveBottom: () => void;
 }
-export const ChatInput: React.FC<ChatInputProps>  =({moveBottom})=>{
+export const ChatInput: React.FC<ChatInputProps> = ({ moveBottom }) => {
     const [text, setText] = useState('');
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -31,26 +32,28 @@ export const ChatInput: React.FC<ChatInputProps>  =({moveBottom})=>{
         }
     };
 
-    return(
-        <div className="row-default w-100" style={{ position: 'fixed', bottom: "40px", left: "0", width: "100%", background: "white" }} >
-        <div className="col-12 col-lg-6 offset-lg-3 d-none d-lg-block"> {/* 상단에 고정되고 하위 div와 겹치지 않도록 수정 */}
-
-            <form onSubmit={handleSubmit}>
-                <div className="input-group">
-                    <textarea
-                        className="form-control"
-                        style={{ resize: 'none', height: 'auto', minHeight: '50px' }}
-                        value={text}
-                        onChange={(e) => setText(e.target.value)}
-                        onKeyDown={handleKeyPress}
-                    />
-
-                    <button disabled={text.length > 0 ? false : true} className="btn btn-primary" type="submit">
-                        <IoIosSend />
-                    </button>
-                </div>
-            </form>
+    return (
+        <div className="chat-input-row">
+            <div className="chat-input-col">
+                <form onSubmit={handleSubmit}>
+                    <div className="input-group">
+                        <textarea
+                            className="form-control"
+                            value={text}
+                            onChange={(e) => setText(e.target.value)}
+                            onKeyDown={handleKeyPress}
+                            style={{ resize: 'none', height: 'auto', minHeight: '50px' }}
+                        />
+                        <button
+                            disabled={text.length === 0}
+                            className="input-button"
+                            type="submit"
+                        >
+                            <IoIosSend />
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
-    </div>
     );
 }

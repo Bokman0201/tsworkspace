@@ -1,14 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import { ChatInput } from "./ChatInput";
+import './chat.css';
 
 export const ChatContent = () => {
-    const [memberList, setMemberList] = useState<string[]>([]);
+    const [messageList, setMeessageList] = useState<number[]>([1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 5, 6, 7, 8]);
 
 
     useEffect(() => {
-        for (let i = 1; i <= 100; i++) {
-            memberList.push(String(i)); // 또는 memberList.push(i.toString());
-        }
+
 
     }, [])
 
@@ -34,12 +33,18 @@ export const ChatContent = () => {
 
 
     return (
-        <div className=" text-end" ref={bottomRef}>
-            {memberList.map((str, ind) => (
-                <div key={ind}>{str}</div>
-            ))}
-
-            <ChatInput moveBottom={moveBottom} />
+        <div className="row">
+          <div className="col-lg-6 offset-lg-3 chat-container">
+            <div className="message-list">
+              {messageList.map((str, ind) => (
+                <div key={ind} className="message">{str}</div>
+              ))}
+              <div ref={bottomRef} />
+            </div>
+            <div className="message-input-container ">
+              <ChatInput   moveBottom={moveBottom} />
+            </div>
+          </div>
         </div>
     );
 }

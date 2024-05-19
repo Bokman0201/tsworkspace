@@ -9,7 +9,7 @@ interface GroupChattingProps {
     size: number
 }
 
-export const GroupChatting: React.FC<GroupChattingProps> = ({ size }) => {
+export const ChatComponent: React.FC<GroupChattingProps> = ({ size }) => {
 
 
 
@@ -44,13 +44,13 @@ export const GroupChatting: React.FC<GroupChattingProps> = ({ size }) => {
 
 
     return (
-        <div style={{ position: "relative", paddingBottom: "80px" }} className="scroll-container" > {/* 하위 div가 겹치지 않도록 padding-bottom 추가 */}
+        <div style={{ position: "relative", paddingBottom: "50px" }} className="scroll-container" > {/* 하위 div가 겹치지 않도록 padding-bottom 추가 */}
             <div className="row">
                 <div className="col-lg-3 " style={{ overflowX: 'auto', maxHeight: `${size}px` }}>
                     <ChatList />
                 </div>
                 <div className="col-lg d-none d-lg-block" style={{ overflowX: 'auto', maxHeight: `${size}px` }}>
-                    <div className="container">
+                    <div  className="container">
                         <ChatContent />
                     </div>
                 </div>

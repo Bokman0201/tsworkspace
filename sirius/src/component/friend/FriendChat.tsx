@@ -1,4 +1,3 @@
-import { ChatContent } from "../chat/ChatContent";
 import { useClientId } from "../store/FriendStore";
 
 export const FriendChat =()=>{
@@ -6,7 +5,6 @@ export const FriendChat =()=>{
 
     return(
         <div className="">
-            <ChatContent/>
         </div>
     );
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { LoginPage } from './component/login/LoginPage';
 import { Home } from './component/home/Home';
@@ -17,8 +17,15 @@ import { GroupsMain } from './component/groups/GroupMain';
 import { GroupChatting } from './component/groups/GroupChatting';
 import { GroupDetail } from './component/groups/GroupDetail';
 import { ChatContent } from './component/chat/ChatContent';
+import { chatMessageType } from './component/types/ChatType';
 
 
+
+interface messageType {
+  type: string,
+  clientId: string,
+  clientNick: string
+}
 
 const App: React.FC = () => {
   const location = useLocation();
@@ -27,49 +34,47 @@ const App: React.FC = () => {
   const sessionClient = (sessionStorage.getItem("clientInfo"))
 
 
-  useLayoutEffect(()=>{
+  useLayoutEffect(() => {
 
     console.log(clientInfo.clientId)
-    if(sessionClient === null){
+    if (sessionClient === null) {
       deleteClientInfo();
     }
 
-    
-    if(sessionClient !== null){
+
+    if (sessionClient !== null) {
       setClientInfo(JSON.parse(sessionClient));
     }
 
-  },[sessionClient]);
+  }, [sessionClient]);
 
-  let socket: WebSocket;
-
-  
+  const socketRef = useRef<WebSocket | null>(null); // 소켓을 null로 초기화합니다.
+  const [messageList, setMessageList] = useState<chatMessageType[]>([]);
 
   useEffect(() => {
-
     const sock = new SockJS(`${process.env.REACT_APP_REST_API_URL}/ws`); // SockJS를 사용하여 연결
+    socketRef.current = sock as WebSocket;
 
-    // 웹소켓 연결
-    socket = sock as WebSocket;
+    const socket = socketRef.current;
 
-    // 연결 시 이벤트 핸들러
-    socket.onopen = () => {
+    socket!.onopen = () => {
       console.log('WebSocket 연결됨');
 
-      if(sessionClient !== null){
-
+      if (sessionClient !== null) {
         const loginData = {
-          type:"login",
-          clientId:clientInfo.clientId,
-          clientNick:clientInfo.clientNick
-        }
-        socket.send(JSON.stringify(loginData));
+          type: "login",
+          clientId: clientInfo.clientId,
+          clientNick: clientInfo.clientNick
+        };
+        socket!.send(JSON.stringify(loginData)); // '!'를 사용하여 null일 경우에도 send가 호출되도록 합니다.
       }
     };
 
     // 메시지 수신 이벤트 핸들러
     socket.onmessage = (event) => {
       const receivedMessage = JSON.parse(event.data);
+      console.log(receivedMessage);
+      setMessageList((prevMessageList) => [...prevMessageList, receivedMessage]);
     };
 
     // 연결 종료 이벤트 핸들러
@@ -79,62 +84,90 @@ const App: React.FC = () => {
 
     // 컴포넌트 언마운트 시 웹소켓 연결 종료
     return () => {
-      socket.close();
+      if (socket) {
+        socket.close();
+      }
     };
   }, [clientInfo]);
+
+  // sendMessage 함수 정의
+  const sendMessage = (message: chatMessageType) => {
+    const socket = socketRef.current;
+    if (socket !== null && socket.readyState === WebSocket.OPEN) {
+      socket.send(JSON.stringify(message));
+    } else {
+      console.error('WebSocket 연결이 열려있지 않습니다.');
+    }
+  };
+
+  useEffect(() => {
+    console.log(messageList);
+  }, [messageList]);
+  
+
+  // messageList 생성 
+  // 보낸거 받은거 저장
+  // 랜더링시 제거 & get 
+
+
+  useEffect(() => {
+  }, []);
 
 
   const [innerHeight, setInnerHeight] = useState(window.innerHeight);
   const [size, setSize] = useState<number>(0);
 
   const resizeListener = () => {
-      setInnerHeight(window.innerHeight);
+    setInnerHeight(window.innerHeight);
   };
   useEffect(() => {
-      window.addEventListener("resize", resizeListener);
-      console.log("innerHeight", innerHeight);
+    window.addEventListener("resize", resizeListener);
+    console.log("innerHeight", innerHeight);
 
-      let chattingRoomSize = innerHeight - 183;
-      setSize(chattingRoomSize)
-      return () => {
-          window.removeEventListener("resize", resizeListener);
-      };
+    let chattingRoomSize = innerHeight - 183;
+    setSize(chattingRoomSize)
+    return () => {
+      window.removeEventListener("resize", resizeListener);
+    };
   }, [innerHeight]); // 빈
 
+
   return (
+    //<WebSocketProvider>
+
     <div>
       {location.pathname !== '/login' && (
         <div className=''>
-          <Header size={size}/>
+          <Header sendMessage={sendMessage} setMessageList={setMessageList} />
         </div>
       )}
 
-      <main className='container-fluid'>
+
+      <main className='container-fluid' style={{ marginTop: "70px" }}>
         <Routes>
           <Route path='/' element={<Home />} />
-          <Route path='login' element={<LoginPage />} />
+          <Route path='/login' element={<LoginPage />} />
           <Route path='/chat' element={<ChatHome />} />
           <Route path='/mypage' element={<MyPageMain />} />
           <Route path='/infoupdate' element={<Infoupdate />} />
-          <Route path='InviteList' element={<InviteList/>}/>
-          <Route path='/friend' element={<FriendsList/>}/>
-          <Route path='/group' element={<GroupsMain/>}/>
-          <Route path='/groupChat' element={<GroupChatting size={size}/>}/>
-          <Route path='/group/detail' element={<GroupDetail/>}/>
-        </Routes>
-
-        <Routes>
-          <Route path='chatRoom' element={<ChatContent/>}/>
+          <Route path='/InviteList' element={<InviteList />} />
+          <Route path='/friend' element={<FriendsList />} /> {/* Corrected path */}
+          <Route path='/group' element={<GroupsMain />} />
+          <Route path='/groupChat' element={<GroupChatting size={size} />} />
+          <Route path='/group/detail' element={<GroupDetail />} />
+          <Route path='/chatRoom' element={<ChatContent sendMessage={sendMessage} messageList={messageList} setMessageList={setMessageList}/>} />
         </Routes>
       </main>
 
-      {location.pathname !== '/login' &&location.pathname !== '/chatRoom' && (
+
+      {location.pathname !== '/login' && location.pathname !== '/chatRoom' && (
         <footer style={{ position: "fixed", bottom: 0 }}>
           <Footer />
           <footer>1</footer>
         </footer>
       )}
     </div>
+    //</WebSocketProvider>
   );
 };
 

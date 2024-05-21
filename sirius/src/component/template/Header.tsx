@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ClientSearchInput } from "./ClientSearchInput";
 import { AddChat } from "../chat/AddChat";
@@ -8,16 +8,20 @@ import { InviteListIcon } from "../client/invite/InviteListIcon";
 import { CiSquarePlus } from "react-icons/ci";
 import { useModalStatus } from "../store/ModalStore";
 import { IoIosArrowBack } from "react-icons/io";
-
+import { chatMessageType } from "../types/ChatType";
+import useClientInfo from "../store/UserStoer";
 
 interface HeaderProps {
-    size: number;
+    sendMessage: (message: chatMessageType) => void;
+    setMessageList: Dispatch<SetStateAction<chatMessageType[]>>;
 }
 
-export const Header: React.FC<HeaderProps> = ({ size }) => {
+export const Header: React.FC<HeaderProps> = ({ sendMessage,setMessageList }) => {
     const location = useLocation();
     const navigate = useNavigate();
     const [title, setTitle] = useState<string>();
+    const roomNoStr = sessionStorage.getItem('roomNo')
+    const { clientInfo } = useClientInfo();
 
     useEffect(() => {
         switch (location.pathname.split('/')[1]) {
@@ -47,6 +51,22 @@ export const Header: React.FC<HeaderProps> = ({ size }) => {
                 break;
         }
     }, [location.pathname]);
+    useEffect(() => {
+        if (location.pathname !== "/chatRoom") {
+            console.log("try");
+            const data = {
+                type: "exit",
+                content: "퇴장",
+                clientId: clientInfo.clientId,
+                roomNo: Number(roomNoStr),
+                date:null
+
+            };
+            sendMessage(data);
+            setMessageList([])
+        }
+    }, [location.pathname]); // 의존성 배열에 location.pathname 추가
+
 
     const [isClick, setIsClick] = useState<boolean>(false);
     const handleSearchButton = () => {
@@ -63,7 +83,7 @@ export const Header: React.FC<HeaderProps> = ({ size }) => {
         setStatus(!status);
     }
 
-    const moveBack =()=>{
+    const moveBack = () => {
         navigate(-1)
     }
 
@@ -92,7 +112,7 @@ export const Header: React.FC<HeaderProps> = ({ size }) => {
             {title === '님과의 대화' && (
                 // split으로 자르고 뒷부분 사용하기
                 <div onClick={moveBack}>
-                    <IoIosArrowBack />
+                    {roomNoStr}<IoIosArrowBack />
                 </div>
             )}
         </header>

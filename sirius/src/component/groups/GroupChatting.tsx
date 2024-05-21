@@ -3,7 +3,6 @@ import './group.css';
 import { IoIosSend } from "react-icons/io";
 import { ChatList } from "../chat/ChatList";
 import { ChatInput } from "../chat/ChatInput";
-import { ChatContent } from "../chat/ChatContent";
 
 interface GroupChattingProps {
     size: number
@@ -51,7 +50,6 @@ export const GroupChatting: React.FC<GroupChattingProps> = ({ size }) => {
                 </div>
                 <div className="col-lg d-none d-lg-block" style={{ overflowX: 'auto', maxHeight: `${size}px` }}>
                     <div className="container">
-                        <ChatContent />
                     </div>
                 </div>
             </div>

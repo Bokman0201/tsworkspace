@@ -72,7 +72,7 @@
 }
 
 .input-button:hover:not(:disabled) {
-  background-color: #0056b3;
+   background-color: #0056b3;
 }
 
 /* 미디어 쿼리 추가 */

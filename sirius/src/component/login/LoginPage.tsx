@@ -72,7 +72,7 @@ export const LoginPage = () => {
                 <form onSubmit={handleSubmit}>
                     <div className="row mt-2">
                         <div className="col-lg-6 offset-lg-3">
-                            <input type="text" name="clientId" required className="form-control" onChange={inputChange} />
+                            <input autoComplete="off" type="text" name="clientId" required className="form-control" onChange={inputChange} />
                         </div>
                     </div>
                     <div className="row mt-2">

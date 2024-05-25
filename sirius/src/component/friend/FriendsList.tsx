@@ -7,6 +7,7 @@ import { FriendProfileModal } from "./FriendProfileModal";
 import './friend.css';
 import { Button, Offcanvas } from "react-bootstrap";
 import { FriendDetail } from "./FriendDetail";
+import { useOffcanvasState } from "../store/ModalStore";
 
 type friendListType = {
     ownerId: string,
@@ -18,7 +19,7 @@ export const FriendsList = () => {
 
     const [friendList, setFriendList] = useState<friendListType[]>();
     const [friendInfo, setFriendInfo] = useState<friendListType>();
- 
+
     const getList = async () => {
         if (clientInfo) {
             try {
@@ -41,12 +42,18 @@ export const FriendsList = () => {
     const toggleList = () => {
         setIsOpen(!isOpen)
     }
+
+
+
+
+    const { canvasIsOpen, setOffcanvasState } = useOffcanvasState();
+
     const [show, setShow] = useState(false);
 
     const handleClose = () => setShow(false);
-    const handleShow = (friend:friendListType) => {
+    const handleShow = (friend: friendListType) => {
         setShow(true);
-        if(friend){
+        if (friend) {
             setFriendInfo(friend)
         }
     }
@@ -69,7 +76,7 @@ export const FriendsList = () => {
                 {isOpen && (
                     <>
                         {friendList?.map((friend, index) => (
-                            <div onClick={()=>handleShow(friend)} className="col-12 col-md-8 offset-md-2 col-lg-8 offset-lg-2 mb-1 p-1 border border-2 rounded" key={index}>
+                            <div onClick={() => handleShow(friend)} className="col-12 col-md-8 offset-md-2 col-lg-8 offset-lg-2 mb-1 p-1 border border-2 rounded" key={index}>
                                 <div style={{ cursor: "pointer" }}>
                                     <FriendInfo friendId={friend.memberId} />
                                 </div>
@@ -82,7 +89,7 @@ export const FriendsList = () => {
 
             <>
                 <Offcanvas placement={"bottom"} show={show} onHide={handleClose} className="fullscreen-offcanvas">
-                    <FriendDetail clientId={friendInfo?.memberId}/>
+                    <FriendDetail clientId={friendInfo?.memberId} />
                 </Offcanvas>
             </>
         </div>

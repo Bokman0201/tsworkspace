@@ -23,6 +23,11 @@ export const Home =()=>{
     return(
         <div className="">
             홈에 뭐 추가하지?
+
+            채팅 사진보내기 
+            파일 보내기 
+            사진 미리보기 저장하기 
+            
         </div>
     );
 }

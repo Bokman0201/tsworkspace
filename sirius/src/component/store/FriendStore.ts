@@ -1,5 +1,10 @@
 import { create } from 'zustand';
 
+export type friendListType = {
+    ownerId: string,
+    memberId: string
+}
+
 interface ClientIdType {
     clientId: string;
 }

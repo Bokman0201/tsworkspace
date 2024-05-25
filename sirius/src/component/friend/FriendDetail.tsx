@@ -1,5 +1,5 @@
 import axios from "axios";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Offcanvas } from "react-bootstrap";
 import { NavLink, useNavigate } from "react-router-dom";
 import useClientInfo from "../store/UserStoer";
@@ -12,6 +12,19 @@ interface friendProps {
 export const FriendDetail: React.FC<friendProps> = ({ clientId }) => {
     const { clientInfo } = useClientInfo();
     const navigator = useNavigate();
+    const [isMyFriend, setIsMyFriend] = useState<boolean>(false)
+
+
+    //친구 목록에 있는지 확인 
+    const searchFriendList =async()=>{
+        const res =await axios.get(`${process.env.REACT_APP_REST_API_URL}/friend/isMyFriend/${clientInfo.clientId}/${clientId}`)
+        setIsMyFriend(res.data)
+    }
+
+    useEffect(()=>{
+        searchFriendList();
+    },[])
+
 
     const seachIsExistChat = async () => {
         // 찾고 
@@ -67,7 +80,12 @@ export const FriendDetail: React.FC<friendProps> = ({ clientId }) => {
             <Offcanvas.Body>
                 <div className="row">
                     <div className="col">
-                        <button onClick={seachIsExistChat} className="btn btn-primary" >1:1대화하기</button>
+
+                        {isMyFriend?(
+                            <button onClick={seachIsExistChat} className="btn btn-primary" >1:1대화하기</button>
+                        ):(
+                            <button className="btn btn-primary">친구추가하기</button>
+                        )}
                     </div>
                 </div>
 

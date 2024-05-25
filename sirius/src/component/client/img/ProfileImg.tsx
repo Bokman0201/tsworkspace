@@ -8,7 +8,7 @@ export const ProfileImg = () => {
 
     return (
         <div className="col d-flex justify-content-center align-items-center selector">
-            <img src="https://dummyimage.com/70x70/000/fff" className="profile-image" alt="Profile" onContextMenu={handleContextMenu} />
+            <img height={90} src="https://dummyimage.com/90x90/000/fff" className="profile-image" alt="Profile" onContextMenu={handleContextMenu} />
         </div>
     );
 }

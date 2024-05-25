@@ -3,14 +3,16 @@ import { ChatInput } from "./ChatInput";
 import './chat.css';
 import { useClientId } from "../store/FriendStore";
 import useClientInfo from "../store/UserStoer";
-import { chatMessageType } from "../types/ChatType";
+import { chatMessageType, messageType } from "../types/ChatType";
 import { useNavigate } from "react-router-dom";
+import { ProfileImg } from "../client/img/ProfileImg";
+import axios from "axios";
 
 
 interface ChatContentProps {
-  sendMessage: (message: chatMessageType) => void;
-  messageList: chatMessageType[]
-  setMessageList: Dispatch<SetStateAction<chatMessageType[]>>;
+  sendMessage: (message: messageType) => void;
+  messageList: messageType[]
+  setMessageList: Dispatch<SetStateAction<messageType[]>>;
 
 }
 
@@ -32,11 +34,14 @@ export const ChatContent: React.FC<ChatContentProps> = ({ sendMessage, messageLi
     //소켓으로 
     if (clientInfo.clientId !== "") {
       const data = {
-        roomNo: Number(roomNo),
-        clientId: clientInfo.clientId,
+        chatMessageNo :  null,
+        chatRoomNo: Number(roomNo),
+        chatClientId: clientInfo.clientId,
+        chatContent:  "enter room : " + roomNo + ", " + "client : " + clientInfo.clientId,
+        chatFiles:null,
+        chatTime: null,
+        chatReadStatus:null,
         type: "enter",
-        content: "enter room : " + roomNo + ", " + "client : " + clientInfo.clientId,
-        date: null
       }
       sendMessage(data)
     }
@@ -58,16 +63,27 @@ export const ChatContent: React.FC<ChatContentProps> = ({ sendMessage, messageLi
     //     return;
     // }
     if (bottomRef.current) {
-      bottomRef.current.scrollIntoView({ behavior: 'auto', block: 'end' });
+      bottomRef.current.scrollIntoView({ behavior: 'auto', block: 'end', inline: 'nearest' });
       setTimeout(() => {
         window.scrollTo(0, document.body.scrollHeight);
-      }, 100); // setTimeout으로 조정하여 스크롤 이벤트를 보장
+      },30); // setTimeout으로 조정하여 스크롤 이벤트를 보장
     }
   }
 
   useEffect(() => {
     moveBottom();
+    getMessageList();
   }, []);
+
+  const getMessageList = async()=>{
+    try{
+      const res = await axios.get(`${process.env.REACT_APP_REST_API_URL}/chat/messageList/${roomNo}`)
+      const reverseList = res.data.reverse();
+      setMessageList(res.data)
+    }catch (e) {
+      console.error(e)
+    } 
+  }
 
 
   return (
@@ -75,16 +91,20 @@ export const ChatContent: React.FC<ChatContentProps> = ({ sendMessage, messageLi
       <div className="col-lg-6 offset-lg-3 chat-container">
         <div className="message-list">
           {messageList.map((msg, ind) => {
-            const isFirstInGroup = ind === 0 || messageList[ind - 1].clientId !== msg.clientId;
-            const isLastInGroup = ind === messageList.length - 1 || messageList[ind + 1].clientId !== msg.clientId;
+            const isFirstInGroup = ind === 0 || messageList[ind - 1].chatClientId !== msg.chatClientId;
+            const isLastInGroup = ind === messageList.length - 1 || messageList[ind + 1].chatClientId !== msg.chatClientId;
 
             return (
-              <div key={ind} className={msg.clientId === clientInfo.clientId ? "text-end" : "text-start"}>
-                {isFirstInGroup && clientInfo.clientId !== msg.clientId && <div className="row w-100">{msg.clientId}</div>}
-                <div className="message">
-                  <div className="col-12"><span>{msg.content}</span></div>
+              <div key={ind} className={msg.chatClientId === clientInfo.clientId ? "text-end" : "text-start"}>
+                {isFirstInGroup && clientInfo.clientId !== msg.chatClientId && 
+                <div className="row w-100">
+                <div className="col">{msg.chatClientId}</div>
                 </div>
-                {isLastInGroup && <div className="col"><span style={{ fontSize: "11px" }}>{msg.date}</span></div>}
+                }
+                <div className="message">
+                  <div className="col-12"><pre>{msg.chatContent}</pre></div>
+                </div>
+                {isLastInGroup && <div className="col"><span style={{ fontSize: "11px" }}>{msg.chatTime}</span></div>}
               </div>
             );
           })}

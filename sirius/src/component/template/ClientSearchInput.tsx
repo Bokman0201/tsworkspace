@@ -2,6 +2,10 @@ import React, { ChangeEvent, useEffect, useLayoutEffect, useState } from "react"
 import { clientSearch } from "../helper/HeaderHelper";
 import axios from "axios";
 import useClientInfo from "../store/UserStoer";
+import { useOffcanvasState } from "../store/ModalStore";
+import { Offcanvas } from "react-bootstrap";
+import { FriendDetail } from "../friend/FriendDetail";
+import { friendListType } from "../store/FriendStore";
 
 type SetIsHeaderClickType = (value: boolean) => void;
 
@@ -11,16 +15,28 @@ export const ClientSearchInput = ({ setIsHeaderClick }: { setIsHeaderClick: SetI
     const [isClick, setIsClick] = useState<boolean>(false);
 
     const { clientInfo, setClientInfo, deleteClientInfo } = useClientInfo();
+    const [list, setList] = useState<friendListType[]>();
 
+    const getList = async () => {
+
+        const res = await axios.get(`${process.env.REACT_APP_REST_API_URL}/friend/list/${clientInfo.clientId}`)
+
+        setList(res.data)
+    }
+
+    useEffect(() => {
+        getList();
+    }, [])
 
     const inputChange = (e: ChangeEvent<HTMLInputElement>) => {
         setText(e.target.value);
     }
 
+
     const handleSearch = async () => {
         if (text !== '') {
             try {
-                const res = await clientSearch(text);
+                const res = await clientSearch(text, clientInfo.clientId);
                 setClientList(res);
             } catch (error) {
                 console.error('Error occurred while searching:', error);
@@ -32,9 +48,7 @@ export const ClientSearchInput = ({ setIsHeaderClick }: { setIsHeaderClick: SetI
         e.preventDefault();
     }
 
-    const handleInputClick = () => {
 
-    }
 
     const handleOutsideClick = (e: MouseEvent) => {
         const clickedElementId = (e.target as HTMLElement)?.id;
@@ -44,7 +58,7 @@ export const ClientSearchInput = ({ setIsHeaderClick }: { setIsHeaderClick: SetI
 
         if (!result) {
             setIsClick(false);
-            if(isClick){
+            if (isClick) {
                 setIsHeaderClick(false)
             }
 
@@ -55,8 +69,10 @@ export const ClientSearchInput = ({ setIsHeaderClick }: { setIsHeaderClick: SetI
 
     }
 
+    const [selectedClient, setSellectedClient] = useState("");
     const handleSearchClientClick = (client: string) => {
-        alert(client);
+        setSellectedClient(client)
+        show();
     }
 
     useLayoutEffect(() => {
@@ -66,24 +82,23 @@ export const ClientSearchInput = ({ setIsHeaderClick }: { setIsHeaderClick: SetI
         }
     }, []);
 
-    const handleSendRequest =(receiver: string)=>{
-        
+    const handleSendRequest = (receiver: string) => {
+
         axios({
-            url:`${process.env.REACT_APP_REST_API_URL}/invite/send`,
-            method:'post',
-            data:{
+            url: `${process.env.REACT_APP_REST_API_URL}/invite/send`,
+            method: 'post',
+            data: {
                 clientId: clientInfo.clientId,
                 invitedClient: receiver
-              }
-        }).then(res=>{
+            }
+        }).then(res => {
 
-            console.log(res.data)
-            if(res.data === 'accept'){
+            if (res.data === 'accept') {
                 alert("이미 상대방의 요청이 있어 친구목록에 추가됩니다.")
             }
 
-        }).catch(err=>{
-            
+        }).catch(err => {
+
             console.error(err)
         })
 
@@ -95,6 +110,19 @@ export const ClientSearchInput = ({ setIsHeaderClick }: { setIsHeaderClick: SetI
             setClientList([]);
         }
     }, [text]);
+
+    const [isOpen, setIsOpen] = useState<boolean>(false);
+    const show = () => {
+        setIsOpen(true)
+    }
+    const handleClose = () => setIsOpen(false)
+
+    const isButtonDisabled = (client: string) => {
+        if (list) {
+            return list.some(friend => friend.memberId === client);
+        }
+    };
+
 
     return (
         <div style={{ position: "relative" }}>
@@ -110,12 +138,27 @@ export const ClientSearchInput = ({ setIsHeaderClick }: { setIsHeaderClick: SetI
                                 {client}
                             </div>
                             <div className="col text-end">
-                                <button className="btn btn-sm btn-success" onClick={()=>handleSendRequest(client)}>추가</button>
+                                <button
+                                    className="btn btn-sm btn-success"
+                                    onClick={() => handleSendRequest(client)}
+                                    disabled={isButtonDisabled(client)}
+                                >
+                                    {isButtonDisabled(client) ? "팔로우중" : "추가"}
+                                </button>
                             </div>
                         </div>
                     ))}
+                    {clientList.length !== 1 && (
+                        <div>더보기</div>
+                    )}
                 </div>
             )}
+
+            <>
+                <Offcanvas placement={"bottom"} show={isOpen} onHide={handleClose} className="fullscreen-offcanvas">
+                    <FriendDetail clientId={selectedClient} />
+                </Offcanvas>
+            </>
         </div>
     );
 }

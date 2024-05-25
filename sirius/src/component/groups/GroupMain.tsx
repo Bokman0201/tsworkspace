@@ -61,7 +61,7 @@ export const GroupsMain: React.FC = () => {
             ) : (
                 <div className="list">
                     {groupList?.map((groupNo, index) => (
-                        <div className="" onClick={()=>moveDetail(groupNo)}>
+                        <div className="" key={index} onClick={()=>moveDetail(groupNo)}>
                             <GorupPreView groupNo={groupNo} key={index} />
                         </div>
                     ))}

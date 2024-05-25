@@ -17,15 +17,11 @@ import { GroupsMain } from './component/groups/GroupMain';
 import { GroupChatting } from './component/groups/GroupChatting';
 import { GroupDetail } from './component/groups/GroupDetail';
 import { ChatContent } from './component/chat/ChatContent';
-import { chatMessageType } from './component/types/ChatType';
+import { chatMessageType, messageType } from './component/types/ChatType';
 
 
 
-interface messageType {
-  type: string,
-  clientId: string,
-  clientNick: string
-}
+
 
 const App: React.FC = () => {
   const location = useLocation();
@@ -49,49 +45,58 @@ const App: React.FC = () => {
   }, [sessionClient]);
 
   const socketRef = useRef<WebSocket | null>(null); // 소켓을 null로 초기화합니다.
-  const [messageList, setMessageList] = useState<chatMessageType[]>([]);
+  const [messageList, setMessageList] = useState<messageType[]>([]);
+  const [socketStatus, setSocketStatus] = useState<boolean>(false)
 
   useEffect(() => {
-    const sock = new SockJS(`${process.env.REACT_APP_REST_API_URL}/ws`); // SockJS를 사용하여 연결
-    socketRef.current = sock as WebSocket;
+    const connectSocket = () => {
+      const sock = new SockJS(`${process.env.REACT_APP_REST_API_URL}/ws`);
+      socketRef.current = sock as WebSocket;
 
-    const socket = socketRef.current;
+      const socket = socketRef.current;
 
-    socket!.onopen = () => {
-      console.log('WebSocket 연결됨');
+      socket.onopen = () => {
+        console.log('WebSocket 연결됨');
+        setSocketStatus(true);
 
-      if (sessionClient !== null) {
-        const loginData = {
-          type: "login",
-          clientId: clientInfo.clientId,
-          clientNick: clientInfo.clientNick
-        };
-        socket!.send(JSON.stringify(loginData)); // '!'를 사용하여 null일 경우에도 send가 호출되도록 합니다.
-      }
+        if (sessionClient !== null) {
+          const loginData = {
+            type: "login",
+            clientId: clientInfo.clientId,
+            clientNick: clientInfo.clientNick,
+          };
+          socket.send(JSON.stringify(loginData));
+        }
+      };
+
+      socket.onmessage = (event) => {
+        const receivedMessage = JSON.parse(event.data);
+        console.log(receivedMessage);
+        setMessageList((prevMessageList) => [...prevMessageList, receivedMessage]);
+      };
+
+      socket.onclose = () => {
+        console.log('WebSocket 연결 종료됨');
+        setSocketStatus(false);
+        // 일정 시간 후 재연결 시도
+        setTimeout(() => {
+          connectSocket();
+        }, 2000); // 5초 후 재연결 시도
+      };
     };
 
-    // 메시지 수신 이벤트 핸들러
-    socket.onmessage = (event) => {
-      const receivedMessage = JSON.parse(event.data);
-      console.log(receivedMessage);
-      setMessageList((prevMessageList) => [...prevMessageList, receivedMessage]);
-    };
-
-    // 연결 종료 이벤트 핸들러
-    socket.onclose = () => {
-      console.log('WebSocket 연결 종료됨');
-    };
+    connectSocket();
 
     // 컴포넌트 언마운트 시 웹소켓 연결 종료
     return () => {
-      if (socket) {
-        socket.close();
+      if (socketRef.current) {
+        socketRef.current.close();
       }
     };
-  }, [clientInfo]);
+  }, [clientInfo, sessionClient]);
 
   // sendMessage 함수 정의
-  const sendMessage = (message: chatMessageType) => {
+  const sendMessage = (message: messageType) => {
     const socket = socketRef.current;
     if (socket !== null && socket.readyState === WebSocket.OPEN) {
       socket.send(JSON.stringify(message));
@@ -103,7 +108,7 @@ const App: React.FC = () => {
   useEffect(() => {
     console.log(messageList);
   }, [messageList]);
-  
+
 
   // messageList 생성 
   // 보낸거 받은거 저장
@@ -155,7 +160,7 @@ const App: React.FC = () => {
           <Route path='/group' element={<GroupsMain />} />
           <Route path='/groupChat' element={<GroupChatting size={size} />} />
           <Route path='/group/detail' element={<GroupDetail />} />
-          <Route path='/chatRoom' element={<ChatContent sendMessage={sendMessage} messageList={messageList} setMessageList={setMessageList}/>} />
+          <Route path='/chatRoom' element={<ChatContent sendMessage={sendMessage} messageList={messageList} setMessageList={setMessageList} />} />
         </Routes>
       </main>
 

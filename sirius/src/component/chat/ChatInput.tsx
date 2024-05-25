@@ -145,7 +145,7 @@ export const ChatInput: React.FC<ChatInputProps & ChatContentProps> = ({ moveBot
                         <button
                             disabled={text.length === 0 && (files === null || files.length === 0)}
                             className="input-button"
-                            type="submit"
+                            type="button"
                             onClick={handleSubmit}
                         >
                             <IoIosSend />

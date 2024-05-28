@@ -98,3 +98,36 @@
     width: 100%;
   }
 }
+
+/* badge css  */
+
+.badge-hover {
+  position: relative;
+  display: inline-block;
+}
+
+.badge-hover .close-button {
+  display: none;
+  position: absolute;
+  top: 0;
+  right: 0;
+  transform: translate(50%, -50%);
+  background: none;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.badge-hover:hover .close-button {
+  display: inline;
+}
+
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  overflow-y: auto;
+}
+
+.form-checkbox {
+  margin-right: 8px; /* Optional: Add some space between checkbox and text */
+}

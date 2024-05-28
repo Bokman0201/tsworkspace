@@ -9,6 +9,7 @@ import { ProfileImg } from "../client/img/ProfileImg";
 import axios from "axios";
 
 
+
 interface ChatContentProps {
   sendMessage: (message: messageType) => void;
   messageList: messageType[]
@@ -98,10 +99,10 @@ export const ChatContent: React.FC<ChatContentProps> = ({ sendMessage, messageLi
               <div key={ind} className={msg.chatClientId === clientInfo.clientId ? "text-end" : "text-start"}>
                 {isFirstInGroup && clientInfo.clientId !== msg.chatClientId && 
                 <div className="row w-100">
-                <div className="col">{msg.chatClientId}</div>
+                <div className="col"><h4>{msg.chatClientId}</h4></div>
                 </div>
                 }
-                <div className="message">
+                <div className="message" >
                   <div className="col-12"><pre>{msg.chatContent}</pre></div>
                 </div>
                 {isLastInGroup && <div className="col"><span style={{ fontSize: "11px" }}>{msg.chatTime}</span></div>}

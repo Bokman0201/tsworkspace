@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useLayoutEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ClientSearchInput } from "./ClientSearchInput";
 import { AddChat } from "../chat/AddChat";
@@ -14,6 +14,7 @@ import axios from "axios";
 import { debug } from "console";
 import { IoIosSettings } from "react-icons/io";
 import { HeaderModal } from "./HeaderModal";
+import { chatRoomType } from "../store/ChatStore";
 
 interface HeaderProps {
     sendMessage: (message: messageType) => void;
@@ -26,6 +27,17 @@ export const Header: React.FC<HeaderProps> = ({ sendMessage, setMessageList }) =
     const [title, setTitle] = useState<string>();
     const roomNoStr = sessionStorage.getItem('roomNo')
     const { clientInfo } = useClientInfo();
+
+
+    const [chatRoomData, setChatRoomData] = useState<chatRoomType>({
+        chatRoomNo: 0,
+        chatClientId: "",
+        chatType: "",
+        chatRoomName: "",
+        chatMembersCount: 0,
+    }
+    );
+
 
     useEffect(() => {
         switch (location.pathname.split('/')[1]) {
@@ -48,16 +60,20 @@ export const Header: React.FC<HeaderProps> = ({ sendMessage, setMessageList }) =
                 setTitle("친구요청");
                 break;
             case 'chatRoom':
-                setTitle((chatRoomName !== '' ? chatRoomName : chatMembers + ' 님과의 대화'));
+                setTitle(chatRoomData.chatRoomName);
                 break;
             default:
                 setTitle("다른 페이지");
                 break;
         }
-    }, [location.pathname]);
-    useEffect(() => {
-        if (location.pathname !== "/chatRoom") {
-            console.log("try");
+    }, [location.pathname, chatRoomData]);
+
+
+    const [prevPath, setPrevPath] = useState(location.pathname);
+
+    useLayoutEffect(() => {
+
+        if (prevPath === "/chatRoom" && location.pathname !== "/chatRoom") {
             const data = {
                 chatMessageNo: null,
                 chatRoomNo: Number(roomNoStr),
@@ -69,9 +85,16 @@ export const Header: React.FC<HeaderProps> = ({ sendMessage, setMessageList }) =
                 type: "exit",
             };
             sendMessage(data);
-            setMessageList([])
+            setMessageList([]);
+            sessionStorage.removeItem("roomNo")
+            setChatRoomData({        chatRoomNo: 0,
+                chatClientId: "",
+                chatType: "",
+                chatRoomName: "",
+                chatMembersCount: 0,})
         }
-    }, [location.pathname]); // 의존성 배열에 location.pathname 추가
+        setPrevPath(location.pathname);
+    }, [location.pathname, prevPath]);
 
 
     const [isClick, setIsClick] = useState<boolean>(false);
@@ -94,36 +117,45 @@ export const Header: React.FC<HeaderProps> = ({ sendMessage, setMessageList }) =
     }
 
 
-    const [chatRoomName, setChatRoomName] = useState('');
-    const [chatMembers, setChatMembers] = useState("");
+ 
 
 
+    // const fetchChatRoomName = async () => {
+    //     try {
+    //         const response = await axios.get(`${process.env.REACT_APP_REST_API_URL}/chat/getChatRoomName/${roomNoStr}`);
+    //         setChatRoomName(response.data);
+    //         if (response.data === "") {
+
+    //             setChatMembers("몰라")
+    //         }
+    //     } catch (error) {
+    //         console.error('Error fetching chat room name:', error);
+    //     }
+    // };
+
+    // fetchChatRoomName();
     useEffect(() => {
-        const fetchChatRoomName = async () => {
-            try {
-                const response = await axios.get(`${process.env.REACT_APP_REST_API_URL}/chat/getChatRoomName/${roomNoStr}`);
-                setChatRoomName(response.data);
-                if (response.data === "") {
-                    //여기서 나열하기 이름
-                    setChatMembers("몰라")
-                }
-            } catch (error) {
-                console.error('Error fetching chat room name:', error);
-            }
-        };
-
-        fetchChatRoomName();
-    }, [roomNoStr]);
+        console.log(" data",chatRoomData)
+        if(location.pathname === "/chatRoom")
+        getChatRoomData()
+    }, [location]);
 
     const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
+
+    const getChatRoomData = async () => {
+        console.log(roomNoStr)
+        const res = await axios.get(`${process.env.REACT_APP_REST_API_URL}/chat/getRoomData/${roomNoStr}/${clientInfo.clientId}`)
+        console.log(res.data)
+        setChatRoomData(res.data)
+    }
 
 
     return (
         <header>
             <h3>{title} {location.pathname === "/chatRoom" && (
                 <>
-                    <IoIosSettings style={{ cursor: "pointer" }} onClick={()=>setModalIsOpen(true)}/>
-                    <HeaderModal modalIsOpen={modalIsOpen} setModalIsOpen={setModalIsOpen}/>
+                    <IoIosSettings style={{ cursor: "pointer" }} onClick={() => setModalIsOpen(true)} />
+                    <HeaderModal modalIsOpen={modalIsOpen} setModalIsOpen={setModalIsOpen} />
                 </>
             )}</h3>
             {title === "홈" && (
@@ -135,14 +167,7 @@ export const Header: React.FC<HeaderProps> = ({ sendMessage, setMessageList }) =
                 <AddChat />
             )}
             {title === '친구요청' && (
-                <div className="ms">
-                    <div className="input-group">
-                        {isClick && (<ClientSearchInput setIsHeaderClick={setIsClick} />)}
-                        <button onClick={handleSearchButton} className="btn btn-sm btn-outline-primary">
-                            {isClick ? (<span>닫기</span>) : (<span>친구찾기</span>)}
-                        </button>
-                    </div>
-                </div>
+                <></>
             )}
             {title === '그룹' && (
                 <CiSquarePlus style={{ cursor: "pointer" }} size="40" color="#555" onClick={controlModal} />
@@ -151,6 +176,17 @@ export const Header: React.FC<HeaderProps> = ({ sendMessage, setMessageList }) =
                 // split으로 자르고 뒷부분 사용하기
                 <div onClick={moveBack}>
                     <IoIosArrowBack />
+                    {sessionStorage.getItem("roomNo")}
+                </div>
+            )}
+            {title === '친구목록' && (
+                <div className="ms">
+                    <div className="input-group">
+                        {isClick && (<ClientSearchInput setIsHeaderClick={setIsClick} />)}
+                        <button onClick={handleSearchButton} className="btn btn-sm btn-outline-primary">
+                            {isClick ? (<span>닫기</span>) : (<span>친구찾기</span>)}
+                        </button>
+                    </div>
                 </div>
             )}
         </header>

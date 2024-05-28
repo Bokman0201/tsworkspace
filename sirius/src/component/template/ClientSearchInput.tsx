@@ -85,22 +85,22 @@ export const ClientSearchInput = ({ setIsHeaderClick }: { setIsHeaderClick: SetI
     const handleSendRequest = (receiver: string) => {
 
         axios({
-            url: `${process.env.REACT_APP_REST_API_URL}/invite/send`,
+            url: `${process.env.REACT_APP_REST_API_URL}/friend/addFriend`,
             method: 'post',
             data: {
-                clientId: clientInfo.clientId,
-                invitedClient: receiver
+                ownerId: clientInfo.clientId,
+                memberId: receiver
             }
         }).then(res => {
-
-            if (res.data === 'accept') {
-                alert("이미 상대방의 요청이 있어 친구목록에 추가됩니다.")
+            if (res.data === 200) {
+                alert("등록되었습니다.")
+                // 화면 리로딩을 위한 스테이트 전달
             }
-
         }).catch(err => {
 
             console.error(err)
         })
+
 
     }
 

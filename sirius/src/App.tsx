@@ -1,5 +1,5 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import { LoginPage } from './component/login/LoginPage';
 import { Home } from './component/home/Home';
 import { Footer } from './component/template/Footer';
@@ -14,7 +14,6 @@ import './App.css';
 import { InviteList } from './component/client/invite/InviteList';
 import { FriendsList } from './component/friend/FriendsList';
 import { GroupsMain } from './component/groups/GroupMain';
-import { GroupChatting } from './component/groups/GroupChatting';
 import { GroupDetail } from './component/groups/GroupDetail';
 import { ChatContent } from './component/chat/ChatContent';
 import { chatMessageType, messageType } from './component/types/ChatType';
@@ -25,20 +24,27 @@ import { chatMessageType, messageType } from './component/types/ChatType';
 
 const App: React.FC = () => {
   const location = useLocation();
+  const navigator = useNavigate();
 
   const { clientInfo, setClientInfo, deleteClientInfo } = useClientInfo();
   const sessionClient = (sessionStorage.getItem("clientInfo"))
-
+  useEffect(() => {
+    if(!sessionClient){
+      alert("로그인후 사용 가능합니다.")
+      navigator("/login")
+    }
+  }, []);
 
   useLayoutEffect(() => {
 
     console.log(clientInfo.clientId)
-    if (sessionClient === null) {
+    if (!sessionClient) {
       deleteClientInfo();
+      navigator("/login")
     }
 
 
-    if (sessionClient !== null) {
+    if (sessionClient) {
       setClientInfo(JSON.parse(sessionClient));
     }
 
@@ -115,8 +121,7 @@ const App: React.FC = () => {
   // 랜더링시 제거 & get 
 
 
-  useEffect(() => {
-  }, []);
+
 
 
   const [innerHeight, setInnerHeight] = useState(window.innerHeight);
@@ -158,7 +163,6 @@ const App: React.FC = () => {
           <Route path='/InviteList' element={<InviteList />} />
           <Route path='/friend' element={<FriendsList />} /> {/* Corrected path */}
           <Route path='/group' element={<GroupsMain />} />
-          <Route path='/groupChat' element={<GroupChatting size={size} />} />
           <Route path='/group/detail' element={<GroupDetail />} />
           <Route path='/chatRoom' element={<ChatContent sendMessage={sendMessage} messageList={messageList} setMessageList={setMessageList} />} />
         </Routes>

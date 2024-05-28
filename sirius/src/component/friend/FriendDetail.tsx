@@ -43,6 +43,7 @@ export const FriendDetail: React.FC<friendProps> = ({ clientId }) => {
                             chatClientId: [
                                 clientInfo.clientId, clientId
                             ],
+                            chatRoomName: "",
                             chatType: "DM"
                         }
                     }).then(async res => {

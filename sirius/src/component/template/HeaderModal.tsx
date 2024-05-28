@@ -1,5 +1,6 @@
 import React, { Dispatch } from "react";
 import { Modal, Offcanvas } from "react-bootstrap";
+import './Header.css';
 interface modalProps {
     modalIsOpen: boolean,
     setModalIsOpen: React.Dispatch<React.SetStateAction<boolean>>
@@ -7,7 +8,7 @@ interface modalProps {
 export const HeaderModal: React.FC<modalProps> = ({ modalIsOpen, setModalIsOpen }) => {
 
     return (
-        <Offcanvas placement={"end"} show={modalIsOpen} onHide={() => setModalIsOpen(false)} className="">
+        <Offcanvas placement={"end"} backdrop="static" show={modalIsOpen} onHide={() => setModalIsOpen(false)} className="">
             <Offcanvas.Header closeButton >
                 <Offcanvas.Title>방 설정</Offcanvas.Title>
             </Offcanvas.Header>
@@ -21,6 +22,8 @@ export const HeaderModal: React.FC<modalProps> = ({ modalIsOpen, setModalIsOpen 
 
 
             </Offcanvas.Body>
+            <div className="">1asdfasd'</div>
+            
         </Offcanvas>
     );
 }

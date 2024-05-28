@@ -8,6 +8,7 @@ import './friend.css';
 import { Button, Offcanvas } from "react-bootstrap";
 import { FriendDetail } from "./FriendDetail";
 import { useOffcanvasState } from "../store/ModalStore";
+import { useNavigate } from "react-router-dom";
 
 type friendListType = {
     ownerId: string,
@@ -19,6 +20,9 @@ export const FriendsList = () => {
 
     const [friendList, setFriendList] = useState<friendListType[]>();
     const [friendInfo, setFriendInfo] = useState<friendListType>();
+
+    const navigator = useNavigate();
+
 
     const getList = async () => {
         if (clientInfo) {
@@ -57,6 +61,16 @@ export const FriendsList = () => {
             setFriendInfo(friend)
         }
     }
+   
+
+
+
+    const seachIsExistChat = async () => {
+        // 찾고 
+      
+        //없으면 
+    }
+
 
     return (
         <div className="container">
@@ -76,9 +90,9 @@ export const FriendsList = () => {
                 {isOpen && (
                     <>
                         {friendList?.map((friend, index) => (
-                            <div onClick={() => handleShow(friend)} className="col-12 col-md-8 offset-md-2 col-lg-8 offset-lg-2 mb-1 p-1 border border-2 rounded" key={index}>
+                            <div  className="col-12 col-md-8 offset-md-2 col-lg-8 offset-lg-2 mb-1 p-1 border border-2 rounded" key={index}>
                                 <div style={{ cursor: "pointer" }}>
-                                    <FriendInfo friendId={friend.memberId} />
+                                    <FriendInfo friend={friend} handleShow={handleShow} />
                                 </div>
                             </div>
                         ))}

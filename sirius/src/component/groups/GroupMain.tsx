@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { GroupChatting } from "./GroupChatting";
 import { NavLink, useNavigate } from "react-router-dom";
 import { CreateGroup } from "./CreateGroup";
 import axios from "axios";

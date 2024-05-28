@@ -34,6 +34,7 @@ export const FriendInfo:React.FC<friendProps> = ({ handleShow , friend }) => {
 
 
     const handleDoubleClick = async(friend:friendListType)=>{
+        if(clientInfo.clientId === friend.memberId){ return}
 
         setClicks(prev => prev + 1);
         setTimer(setTimeout(() => {

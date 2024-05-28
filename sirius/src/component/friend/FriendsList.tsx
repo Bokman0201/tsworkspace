@@ -61,19 +61,26 @@ export const FriendsList = () => {
             setFriendInfo(friend)
         }
     }
-   
+
 
 
 
     const seachIsExistChat = async () => {
         // 찾고 
-      
+
         //없으면 
     }
 
 
     return (
         <div className="container">
+            <div className="row">
+                <div className="col-12 col-md-8 offset-md-2 col-lg-8 offset-lg-2 mb-1 p-1 border border-2 rounded" >
+                    <div style={{ cursor: "pointer" }}>
+                        <FriendInfo friend={{ownerId:clientInfo.clientId, memberId:clientInfo.clientId}} handleShow={handleShow} />
+                    </div>
+                </div>
+            </div>
             <div className="row mb-1">
                 <div className="col">
                     <span style={{ fontSize: "11px" }}>
@@ -90,7 +97,7 @@ export const FriendsList = () => {
                 {isOpen && (
                     <>
                         {friendList?.map((friend, index) => (
-                            <div  className="col-12 col-md-8 offset-md-2 col-lg-8 offset-lg-2 mb-1 p-1 border border-2 rounded" key={index}>
+                            <div className="col-12 col-md-8 offset-md-2 col-lg-8 offset-lg-2 mb-1 p-1 border border-2 rounded" key={index}>
                                 <div style={{ cursor: "pointer" }}>
                                     <FriendInfo friend={friend} handleShow={handleShow} />
                                 </div>

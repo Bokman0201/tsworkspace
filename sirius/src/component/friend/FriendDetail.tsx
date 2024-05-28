@@ -3,6 +3,10 @@ import React, { useEffect, useState } from "react";
 import { Offcanvas } from "react-bootstrap";
 import { NavLink, useNavigate } from "react-router-dom";
 import useClientInfo from "../store/UserStoer";
+import './Offcanvas.css';
+import { FaEdit } from "react-icons/fa";
+import { IoChatbox } from "react-icons/io5";
+
 
 interface friendProps {
     clientId: string | undefined
@@ -16,14 +20,14 @@ export const FriendDetail: React.FC<friendProps> = ({ clientId }) => {
 
 
     //친구 목록에 있는지 확인 
-    const searchFriendList =async()=>{
-        const res =await axios.get(`${process.env.REACT_APP_REST_API_URL}/friend/isMyFriend/${clientInfo.clientId}/${clientId}`)
+    const searchFriendList = async () => {
+        const res = await axios.get(`${process.env.REACT_APP_REST_API_URL}/friend/isMyFriend/${clientInfo.clientId}/${clientId}`)
         setIsMyFriend(res.data)
     }
 
-    useEffect(()=>{
+    useEffect(() => {
         searchFriendList();
-    },[])
+    }, [])
 
 
     const seachIsExistChat = async () => {
@@ -74,28 +78,55 @@ export const FriendDetail: React.FC<friendProps> = ({ clientId }) => {
         //없으면 
     }
     return (
-        <>
+        <div className="offcanvas-container">
             <Offcanvas.Header closeButton>
-                <Offcanvas.Title>{clientId}</Offcanvas.Title>
+                <Offcanvas.Title></Offcanvas.Title>
             </Offcanvas.Header>
             <Offcanvas.Body>
-                <div className="row">
-                    <div className="col">
-
-                        {isMyFriend?(
-                            <button onClick={seachIsExistChat} className="btn btn-primary" >1:1대화하기</button>
-                        ):(
-                            <button className="btn btn-primary">친구추가하기</button>
-                        )}
-                    </div>
+                <div className="background-img">
+                    <img src="https://dummyimage.com/90x90/#f0f0f0/#fff" alt="background" />
                 </div>
 
+                <div className="content">
+                    <div className="mb-2">
+                        <img src="https://dummyimage.com/90x90/000/fff" alt="foreground" />
+                    </div>
+                    <div className="client-name mb-2">
+                        <p>{clientId}</p>
+                    </div>
+                    <div className="p-3 border-top">
+                        <div className="btn-group">
+                            <div className="btn-wrapper">
+                                <button className="btn-clear w-100"><IoChatbox size={30} /></button>
+                                <span>채팅</span>
+                            </div>
+                            <div className="btn-wrapper">
+                                <button className="btn-clear w-100"><FaEdit size={30} /></button>
+                                <span>설정</span>
+                            </div>
+                        </div>
 
-
-
+                    </div>
+                </div>
             </Offcanvas.Body>
-            <div className="offcanvas-footer">
-            </div>
-        </>
+
+
+            {/* <div className="offcanvas-footer">
+                {clientId === clientInfo.clientId ? (
+                    <div className="row">
+                        <button className="btn btn-primary">프로필 설정</button>
+                    </div>
+                ) : (
+                    <>
+                        {isMyFriend ? (
+                            <button onClick={seachIsExistChat} className="btn btn-primary" >1:1대화하기</button>
+                        ) : (
+                            <button className="btn btn-primary">친구추가하기</button>
+                        )}
+                    </>
+                )}
+
+            </div> */}
+        </div>
     );
 }

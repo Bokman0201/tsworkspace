@@ -105,13 +105,13 @@ export const AddChat = () => {
     }, [selectedFriendList])
     return (
         <>
-            <button onClick={openModal}>+</button>
+            <button className="btn btn-sm" onClick={openModal}>+</button>
 
             <Modal show={isModalOpen} onHide={closeModal}>
                 <Modal.Header closeButton>
                     <Modal.Title>새 채팅</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>
+                <Modal.Body>F
                     <div className="row">
                         <div className="col-12">
                             <input value={roomName} onChange={handleChangeRoomName} name="chatRoomName" className="form-control" autoComplete="off" placeholder="roomName" />

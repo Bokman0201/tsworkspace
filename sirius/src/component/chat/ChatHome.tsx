@@ -22,7 +22,7 @@ export const ChatHome = () => {
     }, [clientInfo])
 
     return (
-        <div className="row">
+        <div className="">
             {roomList !== undefined ? (
                 <div className="col">
                     {roomList?.map((room, index) => (

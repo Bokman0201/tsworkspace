@@ -9,11 +9,9 @@ import { Button, Offcanvas } from "react-bootstrap";
 import { FriendDetail } from "./FriendDetail";
 import { useOffcanvasState } from "../store/ModalStore";
 import { useNavigate } from "react-router-dom";
+import { friendListType } from "../store/FriendStore";
 
-type friendListType = {
-    ownerId: string,
-    memberId: string
-}
+
 
 export const FriendsList = () => {
     const { clientInfo, setClientInfo, deleteClientInfo } = useClientInfo();
@@ -77,7 +75,7 @@ export const FriendsList = () => {
             <div className="row">
                 <div className="col-12 col-md-8 offset-md-2 col-lg-8 offset-lg-2 mb-1 p-1 border border-2 rounded" >
                     <div style={{ cursor: "pointer" }}>
-                        <FriendInfo friend={{ownerId:clientInfo.clientId, memberId:clientInfo.clientId}} handleShow={handleShow} />
+                        <FriendInfo friend={{ownerId:clientInfo.clientId, memberId:clientInfo.clientId, memberNick:clientInfo.clientNick}} handleShow={handleShow} />
                     </div>
                 </div>
             </div>

@@ -1,11 +1,13 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Offcanvas } from "react-bootstrap";
 import { NavLink, useNavigate } from "react-router-dom";
 import useClientInfo from "../store/UserStoer";
 import './Offcanvas.css';
 import { FaEdit } from "react-icons/fa";
 import { IoChatbox } from "react-icons/io5";
+import { useModalStatus } from "./Modal";
+import { FriendProfileModal } from "./FriendProfileModal";
 
 
 interface friendProps {
@@ -77,12 +79,38 @@ export const FriendDetail: React.FC<friendProps> = ({ clientId }) => {
         }
         //없으면 
     }
+
+    const { ModalIsOpen, deleteModalIsOpen, setModalIsOpen } = useModalStatus();
+    const editProfile = () => {
+        setModalIsOpen(true);
+    }
+
+    const [showFullText, setShowFullText] = useState(false);
+    const [isOverflowing, setIsOverflowing] = useState(false);
+    const containerRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const container = containerRef.current;
+        if (container && container.scrollWidth > container.clientWidth) {
+            setIsOverflowing(true);
+        } else {
+            setIsOverflowing(false);
+        }
+    }, [showFullText]);
+
+    const handleToggleText = () => {
+        setShowFullText(!showFullText);
+    };
+
+    const text = "상태메세지".repeat(10);
+
     return (
         <div className="offcanvas-container">
             <Offcanvas.Header closeButton>
                 <Offcanvas.Title></Offcanvas.Title>
             </Offcanvas.Header>
             <Offcanvas.Body>
+
                 <div className="background-img">
                     <img src="https://dummyimage.com/90x90/#f0f0f0/#fff" alt="background" />
                 </div>
@@ -92,17 +120,27 @@ export const FriendDetail: React.FC<friendProps> = ({ clientId }) => {
                         <img src="https://dummyimage.com/90x90/000/fff" alt="foreground" />
                     </div>
                     <div className="client-name mb-2">
-                        <p>{clientId}</p>
+                        <span>{clientId}</span>
                     </div>
+                    <div style={{ display: "flex", justifyContent: "center", width: "100%", padding: "0 20%", flexWrap: "wrap" }}>
+                        <div ref={containerRef} style={{ width: "100%", maxWidth: "60ch", overflow: showFullText ? "visible" : "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis" }}>
+                            <span>{text}</span>
+                        </div>
+                    </div>
+                    {isOverflowing && (
+                            <button onClick={handleToggleText} style={{ marginLeft: "10px" }}>
+                                {showFullText ? "접기" : "더 보기"}
+                            </button>
+                        )}
                     <div className="p-3 border-top">
-                        <div className="btn-group">
+                        <div className="btn-group w-100">
                             <div className="btn-wrapper">
                                 <button className="btn-clear w-100"><IoChatbox size={30} /></button>
                                 <span>채팅</span>
                             </div>
                             <div className="btn-wrapper">
-                                <button className="btn-clear w-100"><FaEdit size={30} /></button>
-                                <span>설정</span>
+                                <button onClick={editProfile} className="btn-clear w-100"><FaEdit size={30} /></button>
+                                <span>프로필 편집</span>
                             </div>
                         </div>
 
@@ -126,7 +164,9 @@ export const FriendDetail: React.FC<friendProps> = ({ clientId }) => {
                     </>
                 )}
 
+                
             </div> */}
+            <FriendProfileModal />
         </div>
     );
 }

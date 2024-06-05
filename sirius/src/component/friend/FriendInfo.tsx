@@ -94,7 +94,7 @@ export const FriendInfo:React.FC<friendProps> = ({ handleShow , friend }) => {
                 <div className="col d-flex align-items-center justify">
 
                     <div className="row" onClick={() => handleDoubleClick(friend)}>
-                        <div> <h5>{friend.memberId}</h5></div>
+                        <div> <h5>{friend.memberNick}</h5></div>
                         <div className="col d-flex align-items-center ">
                             <span style={{ fontSize: "12px" }}>나는 아무것도 하기 싫으지</span>
                         </div>

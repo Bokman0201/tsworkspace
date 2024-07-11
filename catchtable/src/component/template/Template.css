@@ -1,0 +1,71 @@
+.footer {
+    background-color: #f8f9fa; /* 예시 배경 색상 */
+    /* padding: ; */
+    text-align: center;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+    left: 0;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.footer p {
+    margin: 0;
+    color: #6c757d;
+    font-size: 14px;
+}
+/* 네비게이션 버튼 스타일 */
+.nav-buttons {
+    list-style-type: none;
+    display: flex;
+    justify-content: space-between;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+}
+
+/* 네비게이션 버튼의 각 항목 스타일 */
+.nav-buttons > li {
+    flex: 1;
+    text-align: center;
+    padding: 10px;
+    cursor: pointer;
+    position: relative; /* 상대 위치 지정 */
+}
+
+
+/* 아이콘 크기 조정 */
+.nav-buttons > li > svg {
+    pointer-events: none; /* 아이콘 자체가 클릭을 방해하지 않도록 설정 */
+}
+
+
+/* header */
+
+/* 커스텀 스타일 */
+.navbar-brand span {
+    cursor: pointer;
+}
+
+.nav-icons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav-res-button > li {
+    border: 1px solid white; /* Adding a solid border with a color */
+    border-radius: 15px;
+    background-color: chocolate;
+    color: white;
+    padding: 10px 20px;      /* Add padding for better appearance */
+    margin: 5px;             /* Add margin to separate items */
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;      /* Center the text */
+    cursor: pointer;         /* Change cursor to pointer */
+    transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+}
+
+.nav-res-button > li:hover {
+    background-color: #d2691e; /* Slightly darker chocolate on hover */
+}

@@ -1,0 +1,60 @@
+.slot-container {
+    overflow-x: auto; /* 가로 스크롤 가능하도록 설정 */
+    white-space: nowrap; /* 내부 요소들이 한 줄로 배열되도록 설정 */
+    -webkit-overflow-scrolling: touch; /* iOS에서 부드러운 스크롤링을 지원 */
+    display: flex; /* Flexbox 사용 */
+    scrollbar-width: none; /* Firefox 용 */
+    -ms-overflow-style: none; /* IE/Edge 용 */
+}
+
+.slot-container::-webkit-scrollbar {
+    display: none; /* 웹킷 브라우저에서 스크롤바 숨기기 */
+}
+
+.time-slots-wrapper {
+    flex: 0 0 auto; /* 크기 변경 없이 각 요소 크기 유지 */
+    padding: 10px; /* 적당한 여백 설정 */
+    box-sizing: border-box; /* padding이 요소 크기에 포함되도록 설정 */
+}
+
+.time-slot {
+    background-color: #f0f0f0; /* 배경색 추가 */
+    padding: 3px; /* 내용의 여백 설정 */
+    border-radius: 5px; /* 둥근 모서리 설정 */
+    display: inline-block; /* 내부 요소를 인라인 블록으로 표시하여 한 줄에 배열 */
+    min-width: 10px; /* 최소 너비 설정 */
+    text-align: center; /* 텍스트 가운데 정렬 */
+    margin-right: 0px; /* 오른쪽 여백 추가 */
+    transition: transform 0.3s ease; /* 변환 효과 추가 */
+}
+
+
+.time-slot.time-slot-disabled{
+    display: none;
+}
+
+.time-slot-selected {
+    background-color: #007bff; /* 선택된 시간의 배경색 */
+    color: #fff; /* 선택된 시간의 텍스트 색 */
+    transform: scale(1.1); /* 선택된 시간의 크기 확대 */
+}
+.capacity-slot {
+    background-color: #f0f0f0; /* 배경색 추가 */
+    padding: 5px; /* 내용의 여백 설정 */
+    border-radius: 50%; /* 둥근 모서리 설정 */
+    display: inline-block; /* 내부 요소를 인라인 블록으로 표시하여 한 줄에 배열 */
+    width: 30px; /* 너비 설정 */
+    height: 30px; /* 높이 설정 */
+    line-height: 24px; /* 텍스트 수직 가운데 정렬 */
+    text-align: center; /* 텍스트 가운데 정렬 */
+    margin-right: 5px; /* 오른쪽 여백 추가 */
+    transition: transform 0.3s ease; /* 트랜지션 효과 추가 */
+    justify-content: center;
+}
+
+
+.capacity-slot-selected {
+    background-color: #007bff; /* 선택된 시간의 배경색 */
+    color: #fff; /* 선택된 시간의 텍스트 색 */
+    transform: scale(1.1); /* 선택된 시간의 크기 확대 */
+}

@@ -1,0 +1,124 @@
+.calendar {
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 0 10px; /* Add padding for smaller screens */
+    box-sizing: border-box; /* Ensure padding is included in width calculations */
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px; /* Reduce padding for smaller screens */
+}
+
+.days {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    background-color: #f7f7f7;
+}
+
+.body {
+    display: flex;
+    flex-direction: column;
+}
+
+.row {
+    display: flex;
+    flex-wrap: wrap; /* Allow rows to wrap on smaller screens */
+}
+
+.col {
+    flex: 1;
+    padding: 5px; /* Reduce padding for smaller screens */
+    text-align: center;
+}
+
+.cell {
+    padding: 10px;
+    cursor: pointer;
+    position: relative;
+    flex: 1; /* Ensure cells take up equal space */
+    min-width: 40px; /* Minimum width to prevent shrinking too much */
+    box-sizing: border-box; /* Ensure padding is included in width calculations */
+}
+
+
+.cell.disabled {
+    color: #ddd;
+}
+
+.cell.selected {
+    background-color: #ff9800;
+    color: white;
+    border-radius: 50%;
+}
+
+.cell .number {
+    position: relative;
+    z-index: 2;
+}
+
+.cell .bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+    background-color: #ff9800;
+    opacity: 0;
+    border-radius: 50%;
+    transition: opacity 0.3s;
+}
+
+.cell.selected .bg {
+    opacity: 1;
+}
+
+.icon {
+    cursor: pointer;
+    padding: 0 10px; /* Add padding for better click area */
+}
+
+.col-end {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.icons {
+    display: flex;
+}
+
+.month-year {
+    font-weight: bold;
+}
+
+/* Media Queries for Responsive Design */
+@media (max-width: 768px) {
+    .header {
+        padding: 10px; /* Further reduce padding on smaller screens */
+    }
+
+    .days {
+        padding: 5px 0; /* Reduce padding on smaller screens */
+    }
+
+    .col {
+        padding: 5px; /* Reduce padding on smaller screens */
+    }
+
+    .cell {
+        padding: 5px; /* Reduce padding on smaller screens */
+    }
+}
+
+.red-text{
+    color: red;
+}
+.blue-text{
+    color: blue;
+}
